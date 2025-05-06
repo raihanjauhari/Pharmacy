@@ -7,53 +7,73 @@ import Banner from "../assets/banner.jpg"
 import Background from "../assets/Background.jpg"
 import { Link, useNavigate } from "react-router-dom"
 
-const VerifikasiKode = () => {
-  const [otp, setOtp] = useState(["", "", "", "", "", ""])
-  const [errorMessage, setErrorMessage] = useState("")
+const PasswordBaru = () => {
+  // State untuk menangani login sukses atau tidak
+  const [loginSuccess, setLoginSuccess] = useState(false)
+
+  // State untuk menyimpan data form (email dan password)
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  })
+
+  // State untuk menyimpan error pada email dan password
+  const [emailError, setEmailError] = useState("")
+
+  // State untuk menyimpan error message global
+  const [passwordError, setPasswordError] = useState("")
+  const [errorMessage, setErrorMessage] = useState("") // Error message global
+
+  // Ref untuk form agar bisa memonitor klik di luar form
   const formRef = useRef(null)
 
-  // Fungsi handle input angka OTP
-  const handleInputChange = (e, index) => {
-    const value = e.target.value
+  // Menangani perubahan input (email dan password)
+  const handleInputChanges = (e) => {
+    const { name, value } = e.target
+    // Reset error saat pengguna mulai mengetik
+    if (emailError) setEmailError("")
+    if (passwordError) setPasswordError("")
 
-    if (!/^\d*$/.test(value)) return // hanya angka
+    setFormData({
+      ...formData,
+      [name]: value,
+    })
 
-    const newOtp = [...otp]
-    newOtp[index] = value
-    setOtp(newOtp)
+    // Walidasi Email
+    if (name === "email" && !/\S+@\S+\.\S+/.test(value)) {
+      setEmailError("Email tidak valid.")
+    }
 
-    // Pindah ke input selanjutnya jika ada input
-    if (value && index < otp.length - 1) {
-      const nextInput = document.getElementById(`otp-input-${index + 1}`)
-      if (nextInput) nextInput.focus()
+    // Validasi Password
+    if (name === "password") {
+      if (value.length < 6) {
+        setPasswordError("Password harus memiliki minimal 6 karakter.")
+      } else if (!/\d/.test(value)) {
+        setPasswordError("Password harus mengandung angka.")
+      } else if (!/[A-Z]/.test(value)) {
+        setPasswordError("Password harus mengandung huruf kapital.")
+      }
     }
   }
 
-  // Fungsi backspace
-  const handleBackspace = (e, index) => {
-    if (e.key === "Backspace" && otp[index] === "" && index > 0) {
-      const prevInput = document.getElementById(`otp-input-${index - 1}`)
-      if (prevInput) prevInput.focus()
-    }
-  }
-
-  // Submit OTP
+  // Menangani Form Submit
   const handleSubmit = (e) => {
     e.preventDefault()
-    const kode = otp.join("")
-    if (kode !== "123456") {
-      setErrorMessage("Kode verifikasi salah.")
-    } else {
-      alert("Kode benar!")
-      setErrorMessage("")
+    if (formData.password !== "Admin123") {
+      setPasswordError("Password salah. Silakan coba lagi.")
+      setLoginSuccess(false)
+      return
     }
+
+    setLoginSuccess(true)
+    setErrorMessage("") // Reset error message
   }
 
-  // Hapus error kalau klik di luar form
+  // Menangani klik di luar form untuk menghapus error message
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (formRef.current && !formRef.current.contains(event.target)) {
-        setErrorMessage("")
+        setErrorMessage("") // Hapus error saat klik di luar form
       }
     }
 
@@ -62,8 +82,6 @@ const VerifikasiKode = () => {
       document.removeEventListener("mousedown", handleClickOutside)
     }
   }, [])
-
-  const isSubmitDisabled = otp.some((digit) => digit === "")
 
   const navigate = useNavigate()
 
@@ -75,47 +93,59 @@ const VerifikasiKode = () => {
       <div className="container bg-white rounded-[20px] max-w-[1200px] w-full max-h-[1000px] md:grid md:grid-cols-2">
         {/* Form */}
         <form
-          onSubmit={handleSubmit}
           ref={formRef}
-          className="flex flex-col items-center justify-center gap-6 py-10"
+          onSubmit={handleSubmit}
+          className="max-w-[460px] w-full mx-auto grid gap-4 place-content-center p-6 md:p-12"
         >
+          {/* Menampilkan pesan jika login sukses */}
+          {loginSuccess && (
+            <p className="text-green-700 bg-green-100 mb-4 p-3 text-center">
+              Logged in successfully!
+            </p>
+          )}
+
+          {/* Menampilkan pesan error global */}
+          {errorMessage && (
+            <p className="text-red-700 bg-red-100 mb-4 p-3 text-center">
+              {errorMessage}
+            </p>
+          )}
+
           {/* Logo */}
           <div className="flex items-end gap-[0px] mb-7">
-            <img src={Logo} alt="logo" className="-ml-5" />
+            <img src={Logo} alt="logo" className="ml-16" />
             <h2 className="font-bold text-3xl text-[#1D242E]">Pharmacy</h2>
           </div>
 
           {/* Header Form - Judul dan deskripsi form */}
-          <h2 className="text-3xl font-bold text-[#2A4D69] text-center">
-            Periksa Email Kamu
-          </h2>
+          <h2 className="text-4xl font-bold text-[#2A4D69] ml-30">LOGIN</h2>
           <p className="text-[#1D242E] pb-4 pt-1 -mt-3 text-center">
-            Kami Mengirim link reset ke Email kamu Masukkan 5 digit kode yang
-            ada di Email kamu
+            Masukkan e-mail yang terdaftar. Kami akan mengirimkan pesan untuk
+            atur ulang password Anda.
           </p>
 
           {/* Email Input */}
-          <div className="flex items-center justify-center gap-3">
-            {otp.map((digit, index) => (
-              <input
-                key={index}
-                id={`otp-input-${index}`}
-                type="text"
-                value={digit}
-                onChange={(e) => handleInputChange(e, index)}
-                onKeyDown={(e) => handleBackspace(e, index)}
-                maxLength="1"
-                className="w-14 h-14 text-center text-2xl font-extrabold text-[#000000] bg-[#FFFFFF] border-3 border-[#2A4D69] hover:border-[#E3EBF3] appearance-none rounded p-4 outline-none focus:bg-white focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
-              />
-            ))}
+          <div className="mb-[28px]">
+            <label className="mb-1 block font-medium text-[#2A4D69]">
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              placeholder="Masukkan Email"
+              value={formData.email}
+              onChange={handleInputChanges}
+              required
+              className="border px-4 py-3 rounded-md focus:ring-2 focus:ring-[#2A4D69]"
+            />
+            {emailError && <p className="text-red-500">{emailError}</p>}
           </div>
-          {errorMessage && <p className="text-red-500">{errorMessage}</p>}
 
           {/* Tombol Submit */}
           <button
             onClick={() => navigate("/verifikasi-kode")}
             type="submit"
-            className="bg-[#2A4D69] text-white py-3 rounded-xl font-medium transition-colors hover:bg-[#2A4D69]/90 duration-200 w-full max-w-xs"
+            className="bg-[#2A4D69] text-white py-3 rounded-xl font-medium transition-colors hover:bg-[#2A4D69]/90 duration-200"
           >
             Kirim
           </button>
@@ -188,4 +218,4 @@ const VerifikasiKode = () => {
   )
 }
 
-export default VerifikasiKode
+export default PasswordBaru
