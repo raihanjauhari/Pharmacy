@@ -1,89 +1,89 @@
-import React, { useState, useEffect, useRef } from "react"
-import Logo from "../assets/logo.svg"
-import Google from "../assets/google-logo.svg"
-import Facebook from "../assets/facebook-logo.svg"
-import Apple from "../assets/apple-logo.svg"
-import Banner from "../assets/banner.jpg"
-import Background from "../assets/Background.jpg"
-import { Link, useNavigate } from "react-router-dom"
+import React, { useState, useEffect, useRef } from "react";
+import Logo from "../assets/logo.svg";
+import Google from "../assets/google-logo.svg";
+import Facebook from "../assets/facebook-logo.svg";
+import Apple from "../assets/apple-logo.svg";
+import Banner from "../assets/banner.jpg";
+import Background from "../assets/Background.jpg";
+import { Link, useNavigate } from "react-router-dom";
 
 const LupaPassword = () => {
   // State untuk menangani login sukses atau tidak
-  const [loginSuccess, setLoginSuccess] = useState(false)
+  const [loginSuccess, setLoginSuccess] = useState(false);
 
   // State untuk menyimpan data form (email dan password)
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-  })
+  });
 
   // State untuk menyimpan error pada email dan password
-  const [emailError, setEmailError] = useState("")
+  const [emailError, setEmailError] = useState("");
 
   // State untuk menyimpan error message global
-  const [passwordError, setPasswordError] = useState("")
-  const [errorMessage, setErrorMessage] = useState("") // Error message global
+  const [passwordError, setPasswordError] = useState("");
+  const [errorMessage, setErrorMessage] = useState(""); // Error message global
 
   // Ref untuk form agar bisa memonitor klik di luar form
-  const formRef = useRef(null)
+  const formRef = useRef(null);
 
   // Menangani perubahan input (email dan password)
   const handleInputChanges = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     // Reset error saat pengguna mulai mengetik
-    if (emailError) setEmailError("")
-    if (passwordError) setPasswordError("")
+    if (emailError) setEmailError("");
+    if (passwordError) setPasswordError("");
 
     setFormData({
       ...formData,
       [name]: value,
-    })
+    });
 
     // Walidasi Email
     if (name === "email" && !/\S+@\S+\.\S+/.test(value)) {
-      setEmailError("Email tidak valid.")
+      setEmailError("Email tidak valid.");
     }
 
     // Validasi Password
     if (name === "password") {
       if (value.length < 6) {
-        setPasswordError("Password harus memiliki minimal 6 karakter.")
+        setPasswordError("Password harus memiliki minimal 6 karakter.");
       } else if (!/\d/.test(value)) {
-        setPasswordError("Password harus mengandung angka.")
+        setPasswordError("Password harus mengandung angka.");
       } else if (!/[A-Z]/.test(value)) {
-        setPasswordError("Password harus mengandung huruf kapital.")
+        setPasswordError("Password harus mengandung huruf kapital.");
       }
     }
-  }
+  };
 
   // Menangani Form Submit
   const handleSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (formData.password !== "Admin123") {
-      setPasswordError("Password salah. Silakan coba lagi.")
-      setLoginSuccess(false)
-      return
+      setPasswordError("Password salah. Silakan coba lagi.");
+      setLoginSuccess(false);
+      return;
     }
 
-    setLoginSuccess(true)
-    setErrorMessage("") // Reset error message
-  }
+    setLoginSuccess(true);
+    setErrorMessage(""); // Reset error message
+  };
 
   // Menangani klik di luar form untuk menghapus error message
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (formRef.current && !formRef.current.contains(event.target)) {
-        setErrorMessage("") // Hapus error saat klik di luar form
+        setErrorMessage(""); // Hapus error saat klik di luar form
       }
-    }
+    };
 
-    document.addEventListener("mousedown", handleClickOutside)
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <div
@@ -118,8 +118,10 @@ const LupaPassword = () => {
           </div>
 
           {/* Header Form - Judul dan deskripsi form */}
-          <h2 className="text-4xl font-bold text-[#2A4D69] ml-30">LOGIN</h2>
-          <p className="text-[#1D242E] pb-4 pt-1 -mt-3 text-center">
+          <h2 className="text-3xl font-bold text-[#2A4D69] text-center mb-7">
+            LUPA PASSWORD
+          </h2>
+          <p className="text-[#000000] pb-4 pt-1 -mt-3 text-center">
             Masukkan e-mail yang terdaftar. Kami akan mengirimkan pesan untuk
             atur ulang password Anda.
           </p>
@@ -151,47 +153,12 @@ const LupaPassword = () => {
           </button>
 
           {/* Link untuk lupa password */}
-          <p className="text-center text-gray-600">
+          <p className="text-center text-[#000000]">
             Kembali ke halaman{" "}
             <Link to={"/"} className="text-[#2A4D69] hover:underline">
               Login
             </Link>
           </p>
-
-          {/* Pembatas (Divider) */}
-          <div className="flex items-center gap-4 mt-6">
-            <span className="w-full bg-gray-300 h-[1px]"></span>
-            <p>Or</p>
-            <span className="w-full bg-gray-300 h-[1px]"></span>
-          </div>
-
-          {/* Tombol login dengan akun sosial */}
-          <div className="flex justify-center items-center gap-5 mt-6">
-            <button type="button">
-              <img
-                src={Google}
-                alt="Sign in with Google"
-                width={32}
-                height={32}
-              />
-            </button>
-            <button type="button">
-              <img
-                src={Apple}
-                alt="Sign in with Apple"
-                width={32}
-                height={32}
-              />
-            </button>
-            <button type="button">
-              <img
-                src={Facebook}
-                alt="Sign in with Facebook"
-                width={32}
-                height={32}
-              />
-            </button>
-          </div>
         </form>
 
         {/* Banner Gambar di sebelah kanan (untuk tampilan layar lebih besar) */}
@@ -215,7 +182,7 @@ const LupaPassword = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default LupaPassword
+export default LupaPassword;

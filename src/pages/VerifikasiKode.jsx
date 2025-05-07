@@ -1,71 +1,71 @@
-import React, { useState, useEffect, useRef } from "react"
-import Logo from "../assets/logo.svg"
-import Google from "../assets/google-logo.svg"
-import Facebook from "../assets/facebook-logo.svg"
-import Apple from "../assets/apple-logo.svg"
-import Banner from "../assets/banner.jpg"
-import Background from "../assets/Background.jpg"
-import { Link, useNavigate } from "react-router-dom"
+import React, { useState, useEffect, useRef } from "react";
+import Logo from "../assets/logo.svg";
+import Google from "../assets/google-logo.svg";
+import Facebook from "../assets/facebook-logo.svg";
+import Apple from "../assets/apple-logo.svg";
+import Banner from "../assets/banner.jpg";
+import Background from "../assets/Background.jpg";
+import { Link, useNavigate } from "react-router-dom";
 
 const VerifikasiKode = () => {
-  const [otp, setOtp] = useState(["", "", "", "", "", ""])
-  const [errorMessage, setErrorMessage] = useState("")
-  const formRef = useRef(null)
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [errorMessage, setErrorMessage] = useState("");
+  const formRef = useRef(null);
 
   // Fungsi handle input angka OTP
   const handleInputChange = (e, index) => {
-    const value = e.target.value
+    const value = e.target.value;
 
-    if (!/^\d*$/.test(value)) return // hanya angka
+    if (!/^\d*$/.test(value)) return; // hanya angka
 
-    const newOtp = [...otp]
-    newOtp[index] = value
-    setOtp(newOtp)
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
 
     // Pindah ke input selanjutnya jika ada input
     if (value && index < otp.length - 1) {
-      const nextInput = document.getElementById(`otp-input-${index + 1}`)
-      if (nextInput) nextInput.focus()
+      const nextInput = document.getElementById(`otp-input-${index + 1}`);
+      if (nextInput) nextInput.focus();
     }
-  }
+  };
 
   // Fungsi backspace
   const handleBackspace = (e, index) => {
     if (e.key === "Backspace" && otp[index] === "" && index > 0) {
-      const prevInput = document.getElementById(`otp-input-${index - 1}`)
-      if (prevInput) prevInput.focus()
+      const prevInput = document.getElementById(`otp-input-${index - 1}`);
+      if (prevInput) prevInput.focus();
     }
-  }
+  };
 
   // Submit OTP
   const handleSubmit = (e) => {
-    e.preventDefault()
-    const kode = otp.join("")
+    e.preventDefault();
+    const kode = otp.join("");
     if (kode !== "123456") {
-      setErrorMessage("Kode verifikasi salah.")
+      setErrorMessage("Kode verifikasi salah.");
     } else {
-      alert("Kode benar!")
-      setErrorMessage("")
+      setErrorMessage("");
+      navigate("/buat-password-baru"); // ⬅️ Tambahkan ini
     }
-  }
+  };
 
   // Hapus error kalau klik di luar form
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (formRef.current && !formRef.current.contains(event.target)) {
-        setErrorMessage("")
+        setErrorMessage("");
       }
-    }
+    };
 
-    document.addEventListener("mousedown", handleClickOutside)
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [])
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
-  const isSubmitDisabled = otp.some((digit) => digit === "")
+  const isSubmitDisabled = otp.some((digit) => digit === "");
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <div
@@ -84,16 +84,14 @@ const VerifikasiKode = () => {
             <img src={Logo} alt="logo" className="-ml-5" />
             <h2 className="font-bold text-3xl text-[#1D242E]">Pharmacy</h2>
           </div>
-
           {/* Header Form - Judul dan deskripsi form */}
           <h2 className="text-3xl font-bold text-[#2A4D69] text-center">
             Periksa Email Kamu
           </h2>
-          <p className="text-[#1D242E] pb-4 pt-1 -mt-3 text-center">
-            Kami Mengirim link reset ke Email kamu Masukkan 5 digit kode yang
+          <p className="text-[#000000] px-16 pt-1 -mt-3 text-center">
+            Kami Mengirim link reset ke Email kamu Masukkan 6 digit kode yang
             ada di Email kamu
           </p>
-
           {/* Email Input */}
           <div className="flex items-center justify-center gap-3">
             {otp.map((digit, index) => (
@@ -110,58 +108,24 @@ const VerifikasiKode = () => {
             ))}
           </div>
           {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-
           {/* Tombol Submit */}
           <button
-            onClick={() => navigate("/verifikasi-kode")}
             type="submit"
-            className="bg-[#2A4D69] text-white py-3 rounded-xl font-medium transition-colors hover:bg-[#2A4D69]/90 duration-200 w-full max-w-xs"
+            className={`bg-[#2A4D69] text-white py-3 rounded-xl font-medium mt-10 transition-colors hover:bg-[#2A4D69]/90 duration-200 w-full max-w-xs  ${
+              isSubmitDisabled
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-[#2A4D69]/90"
+            }`}
           >
             Kirim
           </button>
-
           {/* Link untuk lupa password */}
-          <p className="text-center text-gray-600">
+          <p className="text-center text-[#000000]">
             Kembali ke halaman{" "}
             <Link to={"/"} className="text-[#2A4D69] hover:underline">
               Login
             </Link>
           </p>
-
-          {/* Pembatas (Divider) */}
-          <div className="flex items-center gap-4 mt-6">
-            <span className="w-full bg-gray-300 h-[1px]"></span>
-            <p>Or</p>
-            <span className="w-full bg-gray-300 h-[1px]"></span>
-          </div>
-
-          {/* Tombol login dengan akun sosial */}
-          <div className="flex justify-center items-center gap-5 mt-6">
-            <button type="button">
-              <img
-                src={Google}
-                alt="Sign in with Google"
-                width={32}
-                height={32}
-              />
-            </button>
-            <button type="button">
-              <img
-                src={Apple}
-                alt="Sign in with Apple"
-                width={32}
-                height={32}
-              />
-            </button>
-            <button type="button">
-              <img
-                src={Facebook}
-                alt="Sign in with Facebook"
-                width={32}
-                height={32}
-              />
-            </button>
-          </div>
         </form>
 
         {/* Banner Gambar di sebelah kanan (untuk tampilan layar lebih besar) */}
@@ -175,7 +139,7 @@ const VerifikasiKode = () => {
           />
           <div className="absolute top-1/2 left-0 mx-10 bg-[rgba(42,77,105,0.6)] backdrop-blur-[30px] px-10 py-[60px] text-white -translate-y-1/2 rounded-tl-[50px] rounded-br-[50px]">
             <h2 className="mb-5 text-3xl font-semibold text-[#E3EBF3]">
-              Lupa Kata Sandi?
+              Verifikasi Email
             </h2>
             <p className="font-[#E3EBF3] text-justify">
               Tenang, kami bantu Anda memulihkannya. Silakan masukkan email Anda
@@ -185,7 +149,7 @@ const VerifikasiKode = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default VerifikasiKode
+export default VerifikasiKode;
