@@ -6,7 +6,7 @@ import Apple from "../assets/apple-logo.svg";
 import Banner from "../assets/banner.jpg";
 import Background from "../assets/Background.jpg";
 import { Eye, EyeOff } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Form = () => {
   // State untuk menangani login sukses atau tidak
@@ -31,61 +31,72 @@ const Form = () => {
   // Ref untuk form agar bisa memonitor klik di luar form
   const formRef = useRef(null);
 
+  const navigate = useNavigate();
+
+  const [userRole, setUserRole] = useState(""); // "admin" atau "petugas"
+
   // Menangani perubahan input (email dan password)
   const handleInputChanges = (e) => {
     const { name, value } = e.target;
-    // Reset error saat pengguna mulai mengetik
-    if (emailError) setEmailError("");
-    if (passwordError) setPasswordError("");
 
     setFormData({
       ...formData,
       [name]: value,
     });
 
-    // Walidasi Email
-    if (name === "email" && !/\S+@\S+\.\S+/.test(value)) {
-      setEmailError("Email tidak valid.");
+    if (name === "email") {
+      setEmailError(
+        value === ""
+          ? ""
+          : !/\S+@\S+\.\S+/.test(value)
+          ? "Email tidak valid."
+          : ""
+      );
     }
 
-    // Validasi Password
     if (name === "password") {
-      if (value.length < 6) {
-        setPasswordError("Password harus memiliki minimal 6 karakter.");
-      } else if (!/\d/.test(value)) {
-        setPasswordError("Password harus mengandung angka.");
-      } else if (!/[A-Z]/.test(value)) {
-        setPasswordError("Password harus mengandung huruf kapital.");
-      }
+      let error = "";
+      if (value.length < 6)
+        error = "Password harus memiliki minimal 6 karakter.";
+      else if (!/\d/.test(value)) error = "Password harus mengandung angka.";
+      else if (!/[A-Z]/.test(value))
+        error = "Password harus mengandung huruf kapital.";
+      setPasswordError(error);
     }
   };
 
   // Menangani Form Submit
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (formData.password !== "Admin123") {
+
+    // Cek tipe password untuk menentukan role
+    if (formData.password === "Admin123") {
+      setUserRole("admin");
+      setLoginSuccess(true);
+      setErrorMessage("");
+    } else if (formData.password === "Petugas123") {
+      setUserRole("petugas");
+      setLoginSuccess(true);
+      setErrorMessage("");
+    } else {
       setPasswordError("Password salah. Silakan coba lagi.");
       setLoginSuccess(false);
-      return;
     }
-
-    setLoginSuccess(true);
-    setErrorMessage(""); // Reset error message
   };
 
   // Menangani klik di luar form untuk menghapus error message
+  // Navigasi otomatis jika login berhasil
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (formRef.current && !formRef.current.contains(event.target)) {
-        setErrorMessage(""); // Hapus error saat klik di luar form
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+    if (loginSuccess) {
+      setTimeout(() => {
+        if (userRole === "admin") {
+          navigate("/dashboard-admin");
+        } else if (userRole === "petugas") {
+          navigate("/dashboard-petugas");
+        }
+      }, 3000);
+    }
+  }, [loginSuccess, userRole, navigate]);
 
   return (
     <div
@@ -102,7 +113,7 @@ const Form = () => {
           {/* Menampilkan pesan jika login sukses */}
           {loginSuccess && (
             <p className="text-green-700 bg-green-100 mb-4 p-3 text-center">
-              Logged in successfully!
+              Login Berhasil!
             </p>
           )}
 
