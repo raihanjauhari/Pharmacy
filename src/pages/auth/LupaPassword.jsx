@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import Logo from "../assets/logo.svg";
-import Google from "../assets/google-logo.svg";
-import Facebook from "../assets/facebook-logo.svg";
-import Apple from "../assets/apple-logo.svg";
-import Banner from "../assets/banner.jpg";
-import Background from "../assets/Background.jpg";
+import Logo from "../../assets/logo.svg";
+import Banner from "../../assets/banner.jpg";
+import Background from "../../assets/Background.jpg";
 import { Link, useNavigate } from "react-router-dom";
 
 const LupaPassword = () => {
@@ -59,15 +56,32 @@ const LupaPassword = () => {
   // Menangani Form Submit
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (formData.password !== "Admin123") {
-      setPasswordError("Password salah. Silakan coba lagi.");
+
+    let hasError = false;
+
+    // Validasi kosong
+    if (!formData.email.trim()) {
+      setEmailError("Email tidak boleh kosong.");
+      hasError = true;
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      setEmailError("Format email tidak valid.");
+      hasError = true;
+    }
+
+    // Jika ada error, hentikan proses
+    if (hasError) {
       setLoginSuccess(false);
       return;
     }
 
+    // Simulasi sukses kirim email reset
     setLoginSuccess(true);
-    setErrorMessage(""); // Reset error message
+    setEmailError("");
+    setErrorMessage("");
+    navigate("/verifikasi-kode"); // Redirect ke halaman berikutnya
   };
+
+  const isFormValid = formData.email.trim() && !emailError;
 
   // Menangani klik di luar form untuk menghapus error message
   useEffect(() => {
@@ -145,9 +159,13 @@ const LupaPassword = () => {
 
           {/* Tombol Submit */}
           <button
-            onClick={() => navigate("/verifikasi-kode")}
             type="submit"
-            className="bg-[#2A4D69] text-white py-3 rounded-xl font-medium transition-colors hover:bg-[#2A4D69]/90 duration-200"
+            disabled={!isFormValid}
+            className={`bg-[#2A4D69] text-white py-3 rounded-xl font-medium transition-colors duration-200 ${
+              !isFormValid
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:bg-[#2A4D69]/90"
+            }`}
           >
             Kirim
           </button>

@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import Logo from "../assets/logo.svg";
-import Google from "../assets/google-logo.svg";
-import Facebook from "../assets/facebook-logo.svg";
-import Apple from "../assets/apple-logo.svg";
-import Banner from "../assets/banner.jpg";
-import Background from "../assets/Background.jpg";
+import Logo from "../../assets/logo.svg";
+import Banner from "../../assets/banner.jpg";
+import Background from "../../assets/Background.jpg";
 import { Link, useNavigate } from "react-router-dom";
 
 const VerifikasiKode = () => {

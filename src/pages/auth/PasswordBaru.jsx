@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import Logo from "../assets/logo.svg";
-import Banner from "../assets/banner.jpg";
-import Background from "../assets/Background.jpg";
+import Logo from "../../assets/logo.svg";
+import Banner from "../../assets/banner.jpg";
+import Background from "../../assets/Background.jpg";
 import { Eye, EyeOff } from "lucide-react";
-import SuccessIcon from "../assets/accepted.png"; // Centang hijau
+import SuccessIcon from "../../assets/accepted.png"; // Centang hijau
 import { useNavigate } from "react-router-dom";
-import "../components/PasswordBaru.css";
+import "../../components/PasswordBaru.css";
 
 const PasswordBaru = () => {
   const [formData, setFormData] = useState({
