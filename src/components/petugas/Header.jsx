@@ -58,7 +58,7 @@ const Header = () => {
   }, []);
 
   return (
-    <div className="sticky top-0 z-50 bg-white flex justify-between items-center p-4 border-b-4 border-[#2A4D69]">
+    <div className="sticky top-0 z-50 bg-white flex justify-between items-center p-4 border-b-2 border-t-2 border-[#2A4D69]">
       {/* Search */}
       <div className="flex items-center space-x-5 flex-grow-0 relative">
         {(isDesktop || showSearch) && (
@@ -110,12 +110,14 @@ const Header = () => {
                   className="relative text-2xl text-gray-600 notif-bell"
                   onClick={() => setShowNotif((prev) => !prev)}
                 >
-                  <LucideBell size={25} className="hover:text-indigo-600" />
+                  <LucideBell size={26} className="hover:text-indigo-600" />
                   <span className="absolute top-0 right-0 mt-1 mr-4 flex justify-center items-center bg-indigo-600 text-white font-semibold text-[10px] w-5 h-5 rounded-full border-2 border-white">
                     4
                   </span>
                 </button>
-                {showNotif && <NotificationDropdown />}
+                {showNotif && (
+                  <NotificationDropdown onClose={() => setShowNotif(false)} />
+                )}
               </div>
 
               <div className="relative" ref={profileRef}>

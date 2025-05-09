@@ -1,11 +1,27 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { AlertCircle } from "lucide-react";
 import Atta from "../../assets/doctor/Atta.jpeg";
 import Mae from "../../assets/doctor/Mae.jpeg";
 import Meri from "../../assets/doctor/Meri.jpeg";
 import Nurman from "../../assets/doctor/Nurman.jpeg";
 
-const NotificationDropdown = () => {
+const NotificationDropdown = ({ onClose }) => {
+  const dropdownRef = useRef(null);
+
+  // Tutup dropdown saat klik di luar elemen ini
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        onClose(); // panggil fungsi tutup
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [onClose]);
+
   const notifications = [
     {
       id: 1,
@@ -37,14 +53,15 @@ const NotificationDropdown = () => {
     },
   ];
 
-  // Fungsi untuk menangani klik pada setiap notifikasi
   const handleNotificationClick = (notifId) => {
     alert(`Notifikasi ${notifId} telah diklik!`);
-    // Di sini bisa menambahkan logika navigasi atau aksi lainnya
   };
 
   return (
-    <div className="absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-lg z-50 border-2">
+    <div
+      ref={dropdownRef}
+      className="absolute -right-20 translate-x-4 mt-2 w-96 bg-white rounded-lg shadow-lg z-50 border-2"
+    >
       <div className="bg-[#2A4D69] text-white font-semibold px-4 py-2 rounded-t-lg">
         Notifikasi
       </div>
@@ -52,7 +69,7 @@ const NotificationDropdown = () => {
         {notifications.map((notif) => (
           <li key={notif.id}>
             <button
-              onClick={() => handleNotificationClick(notif.id)} // Panggil fungsi saat diklik
+              onClick={() => handleNotificationClick(notif.id)}
               className="flex items-start gap-3 p-3 w-full text-left hover:bg-gray-50 focus:outline-none"
             >
               {notif.avatar ? (
