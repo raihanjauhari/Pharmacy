@@ -2,27 +2,29 @@ import React from "react";
 
 const SummaryCard = ({ title, linkText, linkAction, items }) => {
   return (
-    <div className="w-170 rounded border border-slate-300 shadow-sm mb-6">
+    <div className="w-[380px] sm:w-[400px] md:w-[800px] rounded-lg border-2 border-slate-300 shadow-md">
       {/* Header */}
-      <div className="bg-slate-600 px-4 py-2 text-center relative">
-        <span className="text-white font-semibold">{title}</span>
+      <div className="bg-slate-600 px-23 py-3 flex items-center justify-between rounded-t-lg ">
+        <span className="text-white text-lg font-bold ">{title}</span>
         <button
           onClick={linkAction}
-          className="absolute right-4 top-1/2 -translate-y-1/2 text-white text-sm hover:underline flex items-center space-x-1"
+          className="text-white text-sm hover:underline flex items-center gap-2 hover:text-[#E3EBF3]"
         >
-          <span>{linkText}</span>
+          <span className="truncate max-w-[140px]">{linkText}</span>
           <span>&raquo;</span>
         </button>
       </div>
 
       {/* Konten Angka */}
-      <div className="flex justify-around px-6 py-4 bg-white">
+      <div className="flex flex-wrap justify-between px-0 py-8 bg-white gap-y-6 text-center">
         {items.map((item, index) => (
-          <div key={index} className="text-center">
-            <div className="text-3xl font-extrabold text-black">
+          <div key={index} className="w-1/2 pr-4">
+            <div className="text-3xl font-extrabold text-black truncate">
               {item.value}
             </div>
-            <div className="text-sm text-slate-700 mt-1">{item.label}</div>
+            <div className="text-base text-slate-700 mt-2 truncate">
+              {item.label}
+            </div>
           </div>
         ))}
       </div>

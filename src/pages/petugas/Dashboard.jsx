@@ -117,7 +117,7 @@ const Dashboard = () => {
       <div className="flex flex-wrap justify-center gap-4 px-8 mt-30">
         <SummaryCard
           title="Stock"
-          linkText="Masuk ke Pengaturan"
+          linkText="Lihat Stok"
           linkAction={() => console.log("Masuk ke Pengaturan")}
           items={[
             { value: "490", label: "Jumlah Obat" },
@@ -144,7 +144,7 @@ const Dashboard = () => {
         />
         <SummaryCard
           title="Pelanggan"
-          linkText="Buka Halaman Pelanggan"
+          linkText="Buka Halaman"
           linkAction={() => console.log("Masuk ke Pengaturan")}
           items={[
             { value: "831", label: "Total Pelanggan" },
