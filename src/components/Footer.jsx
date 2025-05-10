@@ -10,7 +10,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-gray-100 dark:bg-gray-900   shadow-sm">
+    <footer className="bg-[#E3EBF3] dark:bg-gray-900   shadow-sm mt-15">
       <div className="max-w-screen-xl mx-auto px-4 py-6 md:py-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           {/* Logo dan Brand */}
@@ -58,7 +58,11 @@ const Footer = () => {
         {/* Copyright */}
         <p className="text-sm text-[#2A4D69] dark:text-gray-400 text-center">
           © 2025{" "}
-          <a href="#" className="hover:underline hover:text-zinc-500">
+          <a
+            href="https://github.com/raihanjauhari/Pharmacy"
+            target="_blank"
+            className="hover:underline hover:text-zinc-500"
+          >
             PBL Kelompok 5 | Poliban
           </a>
           . All Rights Reserved.

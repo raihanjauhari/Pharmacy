@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Parmasi from "../../assets/Parmasi.jpg";
 import {
   LucideBriefcaseMedical,
@@ -9,8 +9,11 @@ import {
 } from "lucide-react";
 import SummaryCard from "../../components/petugas/SummaryCard";
 import Footer from "../../components/Footer";
+import InventoryModal from "../../components/petugas/InventoryModal"; // Pastikan path sesuai
 
 const Dashboard = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <div>
       <div>
@@ -50,8 +53,11 @@ const Dashboard = () => {
                 Status Inventaris
               </p>
             </div>
-            <div className="bg-[#32A67A] hover:bg-[#75A392]">
-              <button className="w-full px-4 py-2 text-white flex items-center justify-center gap-2">
+            <div className="bg-[#32A67A] hover:bg-[#408d6f]">
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="w-full px-4 py-2 text-white flex items-center justify-center gap-2"
+              >
                 <p className="font-semibold">Lihat Detail Laporan</p>
                 <LucideCircleArrowRight />
               </button>
@@ -152,6 +158,12 @@ const Dashboard = () => {
           ]}
         />
       </div>
+
+      {/* Modal Inventory */}
+      <InventoryModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
 
       {/* Footer */}
       <Footer />
