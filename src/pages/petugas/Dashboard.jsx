@@ -9,10 +9,16 @@ import {
 } from "lucide-react";
 import SummaryCard from "../../components/petugas/SummaryCard";
 import Footer from "../../components/Footer";
-import InventoryModal from "../../components/petugas/InventoryModal"; // Pastikan path sesuai
+import InventoryModal from "../../components/petugas/InventoryModal";
+import EresepModal from "../../components/petugas/EResepModal";
+import StokObatModal from "../../components/petugas/StokObatModal";
+import OutOfStockModal from "../../components/OutOfStockModal";
 
 const Dashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEresepModalOpen, setIsEresepModalOpen] = useState(false);
+  const [isStokObatModalOpen, setIsStokObatModalOpen] = useState(false);
+  const [isOutOfStockModal, setIsOutOfStockModal] = useState(false);
 
   return (
     <div>
@@ -74,7 +80,10 @@ const Dashboard = () => {
               <p className="text-gray-600 mt-2 font-semibold">E-Resep Masuk</p>
             </div>
             <div className="bg-[#E3C731] hover:bg-[#C6B662]">
-              <button className="w-full px-4 py-2 text-white flex items-center justify-center gap-2">
+              <button
+                onClick={() => setIsEresepModalOpen(true)}
+                className="w-full px-4 py-2 text-white flex items-center justify-center gap-2"
+              >
                 <p className="font-semibold">Lihat Detail Laporan</p>
                 <LucideCircleArrowRight />
               </button>
@@ -92,7 +101,10 @@ const Dashboard = () => {
                 Stok Obat Tersedia
               </p>
             </div>
-            <div className="bg-[#33A7DC] hover:bg-[#5BA5C7]">
+            <div
+              onClick={() => setIsStokObatModalOpen(true)}
+              className="bg-[#33A7DC] hover:bg-[#5BA5C7]"
+            >
               <button className="w-full px-4 py-2 text-white flex items-center justify-center gap-2">
                 <p className="font-semibold">Lihat Detail Persediaan</p>
                 <LucideCircleArrowRight />
@@ -110,7 +122,10 @@ const Dashboard = () => {
               <p className="text-gray-600 mt-2 font-semibold">Obat Habis</p>
             </div>
             <div className="bg-[#D9635C] hover:bg-[#C17E7B]">
-              <button className="w-full px-4 py-2 text-white flex items-center justify-center gap-2">
+              <button
+                onClick={() => setIsOutOfStockModal(true)}
+                className="w-full px-4 py-2 text-white flex items-center justify-center gap-2"
+              >
                 <p className="font-semibold">Stok Sekarang</p>
                 <LucideCircleArrowRight />
               </button>
@@ -163,6 +178,24 @@ const Dashboard = () => {
       <InventoryModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+      />
+
+      {/* EResep Modal */}
+      <EresepModal
+        isOpen={isEresepModalOpen}
+        onClose={() => setIsEresepModalOpen(false)}
+      />
+
+      {/* Stok Obat Modal */}
+      <StokObatModal
+        isOpen={isStokObatModalOpen}
+        onClose={() => setIsStokObatModalOpen(false)}
+      />
+
+      {/* Out Of Stok Modal */}
+      <OutOfStockModal
+        isOpen={isOutOfStockModal}
+        onClose={() => setIsOutOfStockModal(false)}
       />
 
       {/* Footer */}
