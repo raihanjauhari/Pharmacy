@@ -67,23 +67,21 @@ const StokObatModal = ({ isOpen, onClose }) => {
                 <table className="w-full table-auto text-sm text-left text-gray-700">
                   <thead className="bg-[#33A7DC] text-white text-xs uppercase">
                     <tr>
-                      <th className="px-6 py-3 text-center">No</th>
-                      <th className="px-6 py-3 text-center">Nama Obat</th>
-                      <th className="px-6 py-3 text-center">Stok</th>
-                      <th className="px-6 py-3 text-center">Satuan</th>
-                      <th className="px-6 py-3 text-center">Kadaluarsa</th>
+                      <th className="px-6 py-3">No</th>
+                      <th className="px-6 py-3">Nama Obat</th>
+                      <th className="px-6 py-3">Stok</th>
+                      <th className="px-6 py-3">Satuan</th>
+                      <th className="px-6 py-3">Kadaluarsa</th>
                     </tr>
                   </thead>
                   <tbody>
                     {dataStok.map((item, index) => (
                       <tr key={item.id} className="border-b hover:bg-gray-50">
-                        <td className="px-6 py-3 text-center">{index + 1}</td>
-                        <td className="px-6 py-3 text-center">{item.nama}</td>
-                        <td className="px-6 py-3 text-center">{item.stok}</td>
-                        <td className="px-6 py-3 text-center">{item.satuan}</td>
-                        <td className="px-6 py-3 text-center">
-                          {item.kadaluarsa}
-                        </td>
+                        <td className="px-6 py-3">{index + 1}</td>
+                        <td className="px-6 py-3">{item.nama}</td>
+                        <td className="px-6 py-3">{item.stok}</td>
+                        <td className="px-6 py-3">{item.satuan}</td>
+                        <td className="px-6 py-3">{item.kadaluarsa}</td>
                       </tr>
                     ))}
                   </tbody>

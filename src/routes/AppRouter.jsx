@@ -16,23 +16,34 @@ import ObatPetugas from "../pages/petugas/Obat.jsx";
 
 // Import untuk Admin
 import DashboardAdmin from "../pages/admin/Dashboard.jsx";
+import LayoutAdmin from "../components/admin/Layout.jsx";
+import EResepAdmin from "../pages/admin/EResep.jsx";
+import ObatAdmin from "../pages/admin/Obat.jsx";
 
 const AppRouter = () => {
   return (
     <BrowserRouter>
       <Routes>
+        {/* AUTH ROUTER */}
         <Route path="/" element={<Login />} />
         <Route path="/lupa-password" element={<LupaPassword />} />
         <Route path="/verifikasi-kode" element={<VerifyCode />} />
         <Route path="/buat-password-baru" element={<PasswordBaru />} />
         <Route path="/ubah-password-berhasil" element={<PasswordBerhasil />} />
 
+        {/* PETUGAS ROUTER */}
         <Route path="/dashboard-petugas" element={<LayoutPetugas />}>
           <Route index element={<DashboardPetugas />} />
           <Route path="e-resep" element={<EResepPetugas />} />
           <Route path="obat" element={<ObatPetugas />} />
         </Route>
-        <Route path="/dashboard-admin" element={<DashboardAdmin />} />
+
+        {/* ADMIN ROUTER */}
+        <Route path="/dashboard-admin" element={<LayoutAdmin />}>
+          <Route index element={<DashboardAdmin />} />
+          <Route path="e-resep" element={<EResepAdmin />} />
+          <Route path="obat" element={<ObatAdmin />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

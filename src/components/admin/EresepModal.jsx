@@ -6,21 +6,21 @@ import { X } from "lucide-react";
 const EresepModal = ({ isOpen, onClose }) => {
   const dummyData = [
     {
-      id: 1,
+      id: "PD001",
       pasien: "Andi",
       dokter: "Dr. Sinta",
       tanggal: "2025-05-10",
       status: "Baru",
     },
     {
-      id: 2,
+      id: "PD002",
       pasien: "Budi",
       dokter: "Dr. Luki",
       tanggal: "2025-05-11",
       status: "Diproses",
     },
     {
-      id: 3,
+      id: "PD003",
       pasien: "Citra",
       dokter: "Dr. Zaki",
       tanggal: "2025-05-12",
@@ -31,7 +31,6 @@ const EresepModal = ({ isOpen, onClose }) => {
   return (
     <Transition show={isOpen} as={Fragment}>
       <Dialog onClose={onClose} className="relative z-50">
-        {/* Background transparan & blur */}
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -41,13 +40,9 @@ const EresepModal = ({ isOpen, onClose }) => {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm"
-            aria-hidden="true"
-          />
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" />
         </Transition.Child>
 
-        {/* Modal Box */}
         <div className="fixed inset-0 flex items-center justify-center p-4">
           <Transition.Child
             as={Fragment}
@@ -58,48 +53,54 @@ const EresepModal = ({ isOpen, onClose }) => {
             leaveFrom="opacity-100 scale-100 translate-y-0"
             leaveTo="opacity-0 scale-95 translate-y-4"
           >
-            <Dialog.Panel className="w-full max-w-4xl rounded-2xl bg-white p-6 shadow-xl relative">
+            <Dialog.Panel className="w-full max-w-4xl rounded-lg bg-white p-6 border border-slate-300 shadow-lg relative">
               <button
                 onClick={onClose}
-                className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
+                className="absolute top-4 right-4 text-slate-500 hover:text-slate-700"
               >
-                <X className="h-6 w-6" />
+                <X className="h-5 w-5" />
               </button>
-              <Dialog.Title className="text-2xl font-semibold mb-4 text-center">
+              <Dialog.Title className="text-xl font-bold mb-4 text-center">
                 Detail E-Resep Masuk
               </Dialog.Title>
               <div className="overflow-x-auto">
-                <table className="w-full table-auto text-sm text-left text-gray-700">
-                  <thead className="bg-[#E3C731] text-black text-xs uppercase">
+                <table className="min-w-full border border-slate-400 text-sm">
+                  <thead className="bg-[#557187] text-white">
                     <tr>
-                      <th className="px-6 py-4 text-center">ID</th>
-                      <th className="px-6 py-4 text-center">Pasien</th>
-                      <th className="px-6 py-4 text-center">Dokter</th>
-                      <th className="px-6 py-4 text-center">Tanggal</th>
-                      <th className="px-6 py-4 text-center">Status</th>
+                      <th className="border border-slate-400 px-4 py-2">ID</th>
+                      <th className="border border-slate-400 px-4 py-2">
+                        Pasien
+                      </th>
+                      <th className="border border-slate-400 px-4 py-2">
+                        Dokter
+                      </th>
+                      <th className="border border-slate-400 px-4 py-2">
+                        Tanggal
+                      </th>
+                      <th className="border border-slate-400 px-4 py-2">
+                        Status
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
-                    {dummyData.map((item) => (
+                    {dummyData.map((item, idx) => (
                       <tr
                         key={item.id}
-                        className="border-b hover:bg-gray-50 transition-colors duration-200"
+                        className={idx % 2 === 1 ? "bg-[#E3EBF3]" : ""}
                       >
-                        <td className="px-6 py-3 text-center">{item.id}</td>
-                        <td className="px-6 py-3 text-center">{item.pasien}</td>
-                        <td className="px-6 py-3 text-center">{item.dokter}</td>
-                        <td className="px-6 py-3 text-center">
+                        <td className="border border-slate-400 px-4 py-2 text-center">
+                          {item.id}
+                        </td>
+                        <td className="border border-slate-400 px-4 py-2">
+                          {item.pasien}
+                        </td>
+                        <td className="border border-slate-400 px-4 py-2">
+                          {item.dokter}
+                        </td>
+                        <td className="border border-slate-400 px-4 py-2 text-center">
                           {item.tanggal}
                         </td>
-                        <td
-                          className={`px-6 py-3 font-semibold text-center ${
-                            item.status === "Baru"
-                              ? "text-blue-600"
-                              : item.status === "Diproses"
-                              ? "text-yellow-600"
-                              : "text-green-600"
-                          }`}
-                        >
+                        <td className="border border-slate-400 px-4 py-2 text-center font-semibold">
                           {item.status}
                         </td>
                       </tr>

@@ -30,7 +30,7 @@ const InventoryModal = ({ isOpen, onClose }) => {
           />
         </Transition.Child>
 
-        <div className="fixed inset-0 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center min-h-screen px-4">
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -54,20 +54,20 @@ const InventoryModal = ({ isOpen, onClose }) => {
                 <table className="w-full table-auto text-sm text-left text-gray-700">
                   <thead className="bg-[#32A67A] text-white text-xs uppercase">
                     <tr>
-                      <th className="px-6 py-4">No</th>
-                      <th className="px-6 py-4">Nama Obat</th>
-                      <th className="px-6 py-4">Stok Obat</th>
-                      <th className="px-6 py-4">Status</th>
+                      <th className="px-6 py-4 text-center">No</th>
+                      <th className="px-6 py-4 text-center">Nama Obat</th>
+                      <th className="px-6 py-4 text-center">Stok Obat</th>
+                      <th className="px-6 py-4 text-center">Status</th>
                     </tr>
                   </thead>
                   <tbody>
                     {dataObat.map((item) => (
                       <tr
                         key={item.no}
-                        className={`border-b hover:bg-gray-50 transition-colors duration-200`}
+                        className="border-b hover:bg-gray-50 transition-colors duration-200"
                       >
-                        <td className="px-6 py-3">{item.no}</td>
-                        <td className="px-6 py-3 font-medium text-gray-800">
+                        <td className="px-6 py-3 text-center">{item.no}</td>
+                        <td className="px-6 py-3 font-medium text-gray-800 text-center">
                           {item.nama}
                         </td>
                         <td className="px-6 py-3 text-center">{item.stok}</td>

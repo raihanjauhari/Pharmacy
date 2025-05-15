@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { LucideBell, LucideSearch, LucideX } from "lucide-react";
 import Jumbo from "../../assets/jumbo.jpeg";
-import NotificationDropdown from "./NotificationDropdown";
+import NotificationDropdown from "./NotificationDropDown";
 import ProfileDropdown from "./ProfileDropDown";
 
 const Header = () => {
@@ -73,7 +73,7 @@ const Header = () => {
               type="text"
               ref={inputRef}
               placeholder="Pencarian..."
-              className="bg-[#E3EBF3] pl-10 pr-8 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A4D69] w-auto sm:w-[500px] md:w-[500px] lg:w-[500px]"
+              className="bg-[#E3EBF3] pl-10 pr-8 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8bacc5] w-auto sm:w-[500px] md:w-[500px] lg:w-[500px]"
             />
             <button
               onClick={() => setShowSearch(false)}

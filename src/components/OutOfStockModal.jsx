@@ -70,8 +70,8 @@ const OutOfStockModal = ({ isOpen, onClose }) => {
                 <table className="w-full table-auto text-sm text-left text-gray-700">
                   <thead className="bg-[#e53935] text-white text-xs uppercase">
                     <tr>
-                      <th className="px-6 py-4">No</th>
-                      <th className="px-6 py-4">Nama Obat</th>
+                      <th className="px-6 py-4 text-center">No</th>
+                      <th className="px-6 py-4 text-center">Nama Obat</th>
                       <th className="px-6 py-4 text-center">Stok</th>
                       <th className="px-6 py-4 text-center">Minimum</th>
                       <th className="px-6 py-4 text-center">Status</th>
@@ -86,8 +86,8 @@ const OutOfStockModal = ({ isOpen, onClose }) => {
                           key={item.no}
                           className="border-b hover:bg-gray-50 transition-colors duration-200"
                         >
-                          <td className="px-6 py-3">{item.no}</td>
-                          <td className="px-6 py-3 font-medium text-gray-800">
+                          <td className="px-6 py-3 text-center">{item.no}</td>
+                          <td className="px-6 py-3 font-medium text-gray-800 text-center">
                             {item.nama}
                           </td>
                           <td className="px-6 py-3 text-center">{item.stok}</td>
@@ -95,7 +95,7 @@ const OutOfStockModal = ({ isOpen, onClose }) => {
                             {item.minimum}
                           </td>
                           <td
-                            className={`px-6 py-3 text-center font-semibold ${color}`}
+                            className={`px-6 py-3 text-center font-semibold ${color} text-center`}
                           >
                             {status}
                           </td>

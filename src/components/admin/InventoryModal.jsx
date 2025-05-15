@@ -1,31 +1,14 @@
-// StokObatModal.jsx
-import React, { Fragment } from "react";
+import React from "react";
 import { Dialog, Transition } from "@headlessui/react";
+import { Fragment } from "react";
 import { X } from "lucide-react";
 
-const StokObatModal = ({ isOpen, onClose }) => {
-  const dataStok = [
-    {
-      id: 1,
-      nama: "Paracetamol",
-      stok: 150,
-      satuan: "Tablet",
-      kadaluarsa: "2025-11-01",
-    },
-    {
-      id: 2,
-      nama: "Amoxicillin",
-      stok: 200,
-      satuan: "Kapsul",
-      kadaluarsa: "2026-01-10",
-    },
-    {
-      id: 3,
-      nama: "Ibuprofen",
-      stok: 75,
-      satuan: "Tablet",
-      kadaluarsa: "2025-08-15",
-    },
+const InventoryModal = ({ isOpen, onClose }) => {
+  const dataObat = [
+    { no: 1, nama: "Paracetamol", stok: 10, status: "Tersedia" },
+    { no: 2, nama: "Amoxicillin", stok: 0, status: "Kosong" },
+    { no: 3, nama: "Vitamin C", stok: 5, status: "Tersedia" },
+    { no: 4, nama: "Ibuprofen", stok: 0, status: "Kosong" },
   ];
 
   return (
@@ -40,7 +23,11 @@ const StokObatModal = ({ isOpen, onClose }) => {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm" />
+          {/* Background semi-transparan */}
+          <div
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm"
+            aria-hidden="true"
+          />
         </Transition.Child>
 
         <div className="fixed inset-0 flex items-center justify-center p-4">
@@ -58,31 +45,40 @@ const StokObatModal = ({ isOpen, onClose }) => {
                 onClick={onClose}
                 className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
               >
-                <X className="w-6 h-6" />
+                <X className="h-6 w-6" />
               </button>
-              <Dialog.Title className="text-xl font-semibold text-center mb-4">
-                Detail Persediaan Obat
+              <Dialog.Title className="text-2xl font-semibold mb-4 text-center">
+                Data Inventaris Obat
               </Dialog.Title>
               <div className="overflow-x-auto">
                 <table className="w-full table-auto text-sm text-left text-gray-700">
-                  <thead className="bg-[#33A7DC] text-white text-xs uppercase">
+                  <thead className="bg-[#32A67A] text-white text-xs uppercase">
                     <tr>
-                      <th className="px-6 py-3 text-center">No</th>
-                      <th className="px-6 py-3 text-center">Nama Obat</th>
-                      <th className="px-6 py-3 text-center">Stok</th>
-                      <th className="px-6 py-3 text-center">Satuan</th>
-                      <th className="px-6 py-3 text-center">Kadaluarsa</th>
+                      <th className="px-6 py-4">No</th>
+                      <th className="px-6 py-4">Nama Obat</th>
+                      <th className="px-6 py-4">Stok Obat</th>
+                      <th className="px-6 py-4">Status</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {dataStok.map((item, index) => (
-                      <tr key={item.id} className="border-b hover:bg-gray-50">
-                        <td className="px-6 py-3 text-center">{index + 1}</td>
-                        <td className="px-6 py-3 text-center">{item.nama}</td>
+                    {dataObat.map((item) => (
+                      <tr
+                        key={item.no}
+                        className={`border-b hover:bg-gray-50 transition-colors duration-200`}
+                      >
+                        <td className="px-6 py-3">{item.no}</td>
+                        <td className="px-6 py-3 font-medium text-gray-800">
+                          {item.nama}
+                        </td>
                         <td className="px-6 py-3 text-center">{item.stok}</td>
-                        <td className="px-6 py-3 text-center">{item.satuan}</td>
-                        <td className="px-6 py-3 text-center">
-                          {item.kadaluarsa}
+                        <td
+                          className={`px-6 py-3 text-center font-semibold ${
+                            item.status === "Tersedia"
+                              ? "text-green-600"
+                              : "text-red-600"
+                          }`}
+                        >
+                          {item.status}
                         </td>
                       </tr>
                     ))}
@@ -97,4 +93,4 @@ const StokObatModal = ({ isOpen, onClose }) => {
   );
 };
 
-export default StokObatModal;
+export default InventoryModal;

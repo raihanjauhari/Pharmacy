@@ -112,14 +112,14 @@ const Form = () => {
         >
           {/* Menampilkan pesan jika login sukses */}
           {loginSuccess && (
-            <p className="text-green-700 bg-green-100 mb-4 p-3 text-center">
+            <p className="text-green-700 bg-green-100 mb-4 p-3 text-center rounded-md">
               Login Berhasil!
             </p>
           )}
 
           {/* Menampilkan pesan error global */}
           {errorMessage && (
-            <p className="text-red-700 bg-red-100 mb-4 p-3 text-center">
+            <p className="text-red-700 bg-red-100 mb-4 p-3 text-center rounded-md">
               {errorMessage}
             </p>
           )}
