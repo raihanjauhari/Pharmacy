@@ -1,5 +1,5 @@
 import Logo from "../../assets/logo.svg";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 // ICON
 import {
@@ -10,13 +10,11 @@ import {
 } from "lucide-react";
 // ICON
 
-import React, { useState } from "react";
+import React from "react";
 
 const Sidebar = () => {
-  const [activeLink, setActiveLink] = useState(0);
-  const handleLinkClick = (index) => {
-    setActiveLink(index);
-  };
+  const location = useLocation(); // Ambil path URL saat ini
+
   const SIDEBAR_LINKS = [
     { id: 1, path: "/dashboard-petugas", name: "Dashboard", icon: LucideBox },
     {
@@ -27,10 +25,11 @@ const Sidebar = () => {
     },
     { id: 3, path: "/dashboard-petugas/obat", name: "Obat", icon: LucidePill },
   ];
+
   return (
     <div className="w-18 md:w-56 fixed left-0 top-0 z-10 h-screen border-0 bg-[#2A4D69]">
       {/* Logo */}
-      <Link to="/dashboard-petugas" onClick={() => handleLinkClick(0)}>
+      <Link to="/dashboard-petugas">
         <div className="p-0 m-0 bg-black">
           <button className="flex items-center bg-black w-full h-26 px-4 py-0 rounded-none border-none">
             <img
@@ -52,13 +51,12 @@ const Sidebar = () => {
           <li
             key={index}
             className={`font-medium rounded-md py-2 px-5 hover:bg-[#557187] hover:text-white ${
-              activeLink === index ? "bg-[#156E80]" : ""
+              location.pathname === link.path ? "bg-[#156E80]" : ""
             }`}
           >
             <Link
               to={link.path}
               className="text-white flex justify-center md:justify-start items-center md:space-x-5"
-              onClick={() => handleLinkClick(index)}
             >
               <span>{React.createElement(link.icon, { size: 20 })}</span>
               <span className="text-sm text-white hidden md:flex">
@@ -72,7 +70,7 @@ const Sidebar = () => {
       {/* Help Section */}
       <div className="w-full absolute bottom-5 left-0 px-4 py-2 text-center">
         <a
-          href="https://web.whatsapp.com/" // ganti nomor
+          href="https://web.whatsapp.com/"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center justify-center md:gap-x-2 text-xs text-[#2A4D69] py-2 px-5 bg-[#E3EBF3] hover:bg-[#E3E3E3] rounded-full font-bold w-fit mx-auto cursor-pointer"

@@ -3,12 +3,15 @@ import Logo from "../assets/logo.svg";
 
 const Footer = () => {
   return (
-    <footer className="bg-[#E3EBF3] dark:bg-gray-900   shadow-sm mt-15">
+    <footer className="bg-[#E3EBF3] dark:bg-gray-900 shadow-sm mt-15">
       <div className="max-w-screen-xl mx-auto px-4 py-6 md:py-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           {/* Logo dan Brand */}
           <div className="flex items-center space-x-3 mb-4 sm:mb-0">
-            <a href="/dashboard-petugas">
+            <a
+              href="/dashboard-petugas"
+              className="flex items-center space-x-2"
+            >
               <img src={Logo} className="h-8" alt="Pharmacy Logo" />
               <span className="text-2xl font-semibold text-gray-900 dark:text-gray-300">
                 PHARMACY
@@ -38,7 +41,12 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:underline">
+                <a
+                  href="https://web.whatsapp.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
                   Bantuan
                 </a>
               </li>

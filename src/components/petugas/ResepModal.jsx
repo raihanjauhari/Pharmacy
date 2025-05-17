@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const formatRupiah = (angka) => {
   return new Intl.NumberFormat("id-ID", {
@@ -10,24 +10,33 @@ const formatRupiah = (angka) => {
 
 const ResepModal = ({ resep, onClose }) => {
   const modalRef = useRef();
+  const [showContent, setShowContent] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
+    setShowContent(true); // animasi masuk
     return () => {
       document.body.style.overflow = "auto";
     };
   }, []);
 
+  const handleClose = () => {
+    setShowContent(false); // animasi keluar
+    setTimeout(() => {
+      onClose(); // tunggu animasi selesai
+    }, 300);
+  };
+
+  const handleOverlayClick = (e) => {
+    if (modalRef.current && !modalRef.current.contains(e.target)) {
+      handleClose();
+    }
+  };
+
   const jumlah = parseInt(resep.jumlahObat || "0");
   const hargaSatuan =
     Number(resep.hargaObat.replace(/\./g, "").replace(",", "")) || 0;
   const totalHarga = jumlah * hargaSatuan;
-
-  const handleOverlayClick = (e) => {
-    if (modalRef.current && !modalRef.current.contains(e.target)) {
-      onClose(); // klik di luar modal → close
-    }
-  };
 
   return (
     <div
@@ -36,7 +45,9 @@ const ResepModal = ({ resep, onClose }) => {
     >
       <div
         ref={modalRef}
-        className="relative w-full max-w-3xl bg-white rounded-xl shadow-2xl p-8 animate-fade-in space-y-6"
+        className={`relative w-full max-w-3xl bg-white rounded-xl shadow-2xl p-8 space-y-6 transform transition-all duration-300 ${
+          showContent ? "opacity-100 scale-100" : "opacity-0 scale-95"
+        }`}
       >
         {/* Header */}
         <h2 className="text-3xl font-bold text-[#557187]">Detail E-Resep</h2>
@@ -128,7 +139,7 @@ const ResepModal = ({ resep, onClose }) => {
         {/* Tombol Selesai */}
         <div className="text-right">
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="bg-[#557187] hover:bg-[#2A4D69] text-white px-6 py-2 rounded-lg transition w-40"
           >
             Tutup

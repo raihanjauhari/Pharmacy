@@ -176,7 +176,7 @@ const EResep = () => {
     "Semua",
     "Antrian E-Resep",
     "Menunggu Panggilan",
-    "Sudah Bayar",
+    "Menunggu Pembayaran",
     "Selesai",
   ];
 
