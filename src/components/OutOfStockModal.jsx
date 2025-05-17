@@ -1,7 +1,5 @@
-import React from "react";
+import React, { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment } from "react";
-import { X } from "lucide-react";
 
 const OutOfStockModal = ({ isOpen, onClose }) => {
   const dataObat = [
@@ -9,6 +7,12 @@ const OutOfStockModal = ({ isOpen, onClose }) => {
     { no: 2, nama: "Amoxicillin", stok: 3, minimum: 10 },
     { no: 3, nama: "Ibuprofen", stok: 12, minimum: 10 },
     { no: 4, nama: "Vitamin C", stok: 0, minimum: 10 },
+    { no: 5, nama: "Cetirizine", stok: 8, minimum: 10 },
+    { no: 6, nama: "Loperamide", stok: 6, minimum: 10 },
+    { no: 7, nama: "Metformin", stok: 0, minimum: 10 },
+    { no: 8, nama: "Diclofenac", stok: 15, minimum: 10 },
+    { no: 9, nama: "Azithromycin", stok: 2, minimum: 10 },
+    { no: 10, nama: "Ranitidine", stok: 9, minimum: 10 },
   ];
 
   const getStatus = (stok, min) => {
@@ -28,9 +32,19 @@ const OutOfStockModal = ({ isOpen, onClose }) => {
     }
   };
 
+  const [showAll, setShowAll] = useState(false);
+
+  const dataToShow = showAll ? dataObat : dataObat.slice(0, 5);
+
   return (
     <Transition show={isOpen} as={Fragment}>
-      <Dialog onClose={onClose} className="relative z-50">
+      <Dialog
+        onClose={() => {
+          setShowAll(false); // Reset tampilannya
+          onClose(); // Tutup modal
+        }}
+        className="relative z-50"
+      >
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -58,17 +72,36 @@ const OutOfStockModal = ({ isOpen, onClose }) => {
           >
             <Dialog.Panel className="w-full max-w-4xl rounded-2xl bg-white p-6 shadow-xl relative">
               <button
-                onClick={onClose}
+                onClick={() => {
+                  setShowAll(false); // Reset saat tombol close ditekan
+                  onClose();
+                }}
                 className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
+                aria-label="Close modal"
               >
-                <X className="h-6 w-6" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
               </button>
+
               <Dialog.Title className="text-2xl font-semibold mb-4 text-center">
-                Daftar Obat Habis / Hampir Habis
+                Daftar Stok Obat
               </Dialog.Title>
+
               <div className="overflow-x-auto">
                 <table className="w-full table-auto text-sm text-left text-gray-700">
-                  <thead className="bg-[#e53935] text-white text-xs uppercase">
+                  <thead className="bg-[#D9635C] text-white text-xs uppercase">
                     <tr>
                       <th className="px-6 py-4 text-center">No</th>
                       <th className="px-6 py-4 text-center">Nama Obat</th>
@@ -78,13 +111,15 @@ const OutOfStockModal = ({ isOpen, onClose }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {dataObat.map((item) => {
+                    {dataToShow.map((item, index) => {
                       const status = getStatus(item.stok, item.minimum);
                       const color = getStatusColor(status);
                       return (
                         <tr
                           key={item.no}
-                          className="border-b hover:bg-gray-50 transition-colors duration-200"
+                          className={`border-b transition-colors duration-200 ${
+                            index % 2 === 0 ? "bg-white" : "bg-red-50"
+                          } hover:bg-red-100`}
                         >
                           <td className="px-6 py-3 text-center">{item.no}</td>
                           <td className="px-6 py-3 font-medium text-gray-800 text-center">
@@ -95,7 +130,7 @@ const OutOfStockModal = ({ isOpen, onClose }) => {
                             {item.minimum}
                           </td>
                           <td
-                            className={`px-6 py-3 text-center font-semibold ${color} text-center`}
+                            className={`px-6 py-3 text-center font-semibold ${color}`}
                           >
                             {status}
                           </td>
@@ -105,6 +140,17 @@ const OutOfStockModal = ({ isOpen, onClose }) => {
                   </tbody>
                 </table>
               </div>
+
+              {!showAll && (
+                <div className="flex justify-center mt-4">
+                  <button
+                    onClick={() => setShowAll(true)}
+                    className="px-4 py-2 bg-[#D9635C] text-white rounded-md hover:bg-[#b94f4a]"
+                  >
+                    Lihat Semua Data
+                  </button>
+                </div>
+              )}
             </Dialog.Panel>
           </Transition.Child>
         </div>

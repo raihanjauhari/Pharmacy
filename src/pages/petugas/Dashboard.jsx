@@ -47,7 +47,7 @@ const Dashboard = () => {
         {/* Kontainer Card setelah banner */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-8 mt-[-300px] z-20 relative">
           {/* Status Inventaris */}
-          <div className="border-3 border-[#32A67A] rounded-md overflow-hidden shadow-sm bg-[#EAF6F1]">
+          <div className="border-4 border-[#32A67A] rounded-md overflow-hidden shadow-sm bg-[#EAF6F1]">
             <div className="p-4 text-center">
               <div className="flex justify-center">
                 <LucideShieldPlus className="text-[#32A67A] w-14 h-14" />
@@ -71,7 +71,7 @@ const Dashboard = () => {
           </div>
 
           {/* E-Resep Masuk */}
-          <div className="border-3 border-[#E3C731] rounded-md overflow-hidden shadow-sm bg-[#FCF9EA]">
+          <div className="border-4 border-[#E3C731] rounded-md overflow-hidden shadow-sm bg-[#FCF9EA]">
             <div className="p-4 text-center">
               <div className="flex justify-center">
                 <LucideBriefcaseMedical className="text-[#E3C731] w-14 h-14" />
@@ -91,7 +91,7 @@ const Dashboard = () => {
           </div>
 
           {/* Stok Obat Tersedia */}
-          <div className="border-3 border-[#33A7DC] rounded-md overflow-hidden shadow-sm bg-[#EAF6FB]">
+          <div className="border-4 border-[#33A7DC] rounded-md overflow-hidden shadow-sm bg-[#EAF6FB]">
             <div className="p-4 text-center">
               <div className="flex justify-center">
                 <LucideHospital className="text-[#33A7DC] w-14 h-14" />
@@ -113,7 +113,7 @@ const Dashboard = () => {
           </div>
 
           {/* Obat Habis */}
-          <div className="border-3 border-[#D9635C] rounded-md overflow-hidden shadow-sm bg-[#FBEFEE]">
+          <div className="border-4 border-[#D9635C] rounded-md overflow-hidden shadow-sm bg-[#FBEFEE]">
             <div className="p-4 text-center">
               <div className="flex justify-center">
                 <LucideTriangleAlert className="text-[#D9635C] w-14 h-14" />

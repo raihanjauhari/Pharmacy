@@ -28,20 +28,20 @@ const Sidebar = () => {
     { id: 3, path: "/dashboard-petugas/obat", name: "Obat", icon: LucidePill },
   ];
   return (
-    <div className="w-16 md:w-56 fixed left-0 top-0 z-10 h-screen border-0 bg-[#2A4D69]">
+    <div className="w-18 md:w-56 fixed left-0 top-0 z-10 h-screen border-0 bg-[#2A4D69]">
       {/* Logo */}
       <Link to="/dashboard-petugas" onClick={() => handleLinkClick(0)}>
         <div className="p-0 m-0 bg-black">
-          <button className="flex items-center bg-black w-full h-25 px-4 py-0 rounded-none border-none">
+          <button className="flex items-center bg-black w-full h-26 px-4 py-0 rounded-none border-none">
             <img
               src={Logo}
               alt="logo"
-              className="w-8 md:w-28"
+              className="w-11 md:w-28"
               style={{ display: "block" }}
             />
-            <h2 className="ml-3 hidden md:block text-2xl font-semibold text-white">
+            <h3 className="ml-3 hidden md:block text-2xl font-semibold text-white">
               PHARMACY
-            </h2>
+            </h3>
           </button>
         </div>
       </Link>
@@ -70,11 +70,16 @@ const Sidebar = () => {
       </ul>
 
       {/* Help Section */}
-      <div className="w-full absolute bottom-5 left-0 px-4 py-2 cursor-pointer text-center">
-        <p className="flex items-center justify-center md:gap-x-2 text-xs text-[#2A4D69] py-2 px-5 bg-[#E3EBF3] hover:bg-[#E3E3E3] rounded-full font-bold w-fit mx-auto">
+      <div className="w-full absolute bottom-5 left-0 px-4 py-2 text-center">
+        <a
+          href="https://web.whatsapp.com/" // ganti nomor
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center md:gap-x-2 text-xs text-[#2A4D69] py-2 px-5 bg-[#E3EBF3] hover:bg-[#E3E3E3] rounded-full font-bold w-fit mx-auto cursor-pointer"
+        >
           <HeartHandshake size={24} />
           <span className="hidden md:flex">Butuh Bantuan?</span>
-        </p>
+        </a>
       </div>
     </div>
   );
