@@ -73,25 +73,6 @@ const EResep = () => {
       },
     },
     {
-      id: "PD004",
-      status: "Selesai",
-      resep: {
-        namaPasien: "Bagas Pratama",
-        umur: "30 tahun",
-        poli: "Poli Penyakit Dalam",
-        beratBadan: "70 kg",
-        Diagnosa: "Diare akut",
-        hargaObat: "10.000",
-        namaDokter: "dr. Nina Kartika",
-        idResep: "RSP005",
-        namaObat: "Loperamide",
-        jumlahObat: "6",
-        aturanPakai: "Saat diare",
-        keterangan: "Dengan air putih",
-        tanggalResep: "2025-05-15",
-      },
-    },
-    {
       id: "PD005",
       status: "Sudah Bayar",
       resep: {
@@ -205,6 +186,7 @@ const EResep = () => {
         tanggalResep: "2025-05-10",
       },
     },
+
     {
       id: "PD011",
       status: "Menunggu Pembayaran",
@@ -492,6 +474,13 @@ const EResep = () => {
     setSelectedResep(null);
   };
 
+  const [showAll, setShowAll] = useState(false);
+
+  // Batasi data hanya 12 jika showAll = false
+  const displayedData = showAll
+    ? filteredAndSortedData
+    : filteredAndSortedData.slice(0, 12);
+
   return (
     <div>
       <div className="p-4 md:p-6 space-y-6">
@@ -602,7 +591,7 @@ const EResep = () => {
             </thead>
 
             <tbody>
-              {filteredAndSortedData.length === 0 ? (
+              {displayedData.length === 0 ? (
                 <tr>
                   <td
                     colSpan={6}
@@ -612,7 +601,7 @@ const EResep = () => {
                   </td>
                 </tr>
               ) : (
-                filteredAndSortedData.map((item, idx) => (
+                displayedData.map((item, idx) => (
                   <tr
                     key={item.id}
                     className={idx % 2 === 1 ? "bg-[#E3EBF3]" : ""}
@@ -678,6 +667,17 @@ const EResep = () => {
             </tbody>
           </table>
         </div>
+
+        {filteredAndSortedData.length > 12 && (
+          <div className="flex justify-center mt-4">
+            <button
+              onClick={() => setShowAll(!showAll)}
+              className="bg-[#2A4D69] text-white px-4 py-2 rounded hover:bg-[#1e3a52] transition"
+            >
+              {showAll ? "Sembunyikan" : "Lihat Semua"}
+            </button>
+          </div>
+        )}
 
         <div className="mt-8 p-4 bg-[#F9FAFB] rounded-lg shadow-sm border border-slate-200">
           <div className="flex items-start gap-2 mb-2">

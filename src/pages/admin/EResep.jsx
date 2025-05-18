@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Footer from "../../components/Footer";
 import { LucideSearch } from "lucide-react";
+import ScrollToTopButton from "../../components/admin/ScrollToTopBotton";
 
 const dataResep = [
   {
@@ -17,7 +18,7 @@ const dataResep = [
     dokter: "dr. Dewa Mahendra",
     obat: "Insto",
     tanggal: "03-05-2025",
-    status: "Menunggu",
+    status: "Menunggu Pembayaran",
   },
   {
     id: "RSP003",
@@ -25,7 +26,7 @@ const dataResep = [
     dokter: "dr. Intan Prameswari",
     obat: "Amoxicillin",
     tanggal: "03-05-2025",
-    status: "Menunggu",
+    status: "Sudah Bayar",
   },
   {
     id: "RSP004",
@@ -33,22 +34,150 @@ const dataResep = [
     dokter: "dr. Rizal Hamzah",
     obat: "Cefadroxil",
     tanggal: "03-05-2025",
-    status: "Menunggu",
+    status: "Sudah Bayar",
+  },
+  {
+    id: "RSP005",
+    pasien: "Lina Marlina",
+    dokter: "dr. Andi Wijaya",
+    obat: "Ibuprofen",
+    tanggal: "04-05-2025",
+    status: "Diproses",
+  },
+  {
+    id: "RSP006",
+    pasien: "Budi Santoso",
+    dokter: "dr. Siti Rahmawati",
+    obat: "Antasida",
+    tanggal: "04-05-2025",
+    status: "Selesai",
+  },
+  {
+    id: "RSP007",
+    pasien: "Tari Wulandari",
+    dokter: "dr. Bambang Sutrisno",
+    obat: "Lansoprazole",
+    tanggal: "05-05-2025",
+    status: "Sudah Bayar",
+  },
+  {
+    id: "RSP008",
+    pasien: "Raka Hermawan",
+    dokter: "dr. Fitriani Nasution",
+    obat: "Cetirizine",
+    tanggal: "05-05-2025",
+    status: "Menunggu Pembayaran",
+  },
+  {
+    id: "RSP009",
+    pasien: "Sinta Dewi",
+    dokter: "dr. Andika Pranata",
+    obat: "Simvastatin",
+    tanggal: "06-05-2025",
+    status: "Selesai",
+  },
+  {
+    id: "RSP010",
+    pasien: "Doni Saputra",
+    dokter: "dr. Vina Oktaviani",
+    obat: "Omeprazole",
+    tanggal: "06-05-2025",
+    status: "Menunggu Pembayaran",
+  },
+  {
+    id: "RSP011",
+    pasien: "Nina Agustin",
+    dokter: "dr. Hendra Kusuma",
+    obat: "Dexamethasone",
+    tanggal: "07-05-2025",
+    status: "Diproses",
+  },
+  {
+    id: "RSP012",
+    pasien: "Ari Kurniawan",
+    dokter: "dr. Maya Anindita",
+    obat: "Ranitidine",
+    tanggal: "07-05-2025",
+    status: "Sudah Bayar",
+  },
+  {
+    id: "RSP013",
+    pasien: "Yuli Rahmawati",
+    dokter: "dr. Fajar Nugroho",
+    obat: "Amlodipine",
+    tanggal: "08-05-2025",
+    status: "Selesai",
+  },
+  {
+    id: "RSP014",
+    pasien: "Eka Saputra",
+    dokter: "dr. Suci Ramadhani",
+    obat: "Metformin",
+    tanggal: "08-05-2025",
+    status: "Diproses",
+  },
+  {
+    id: "RSP015",
+    pasien: "Taufik Hidayat",
+    dokter: "dr. Rina Wijayanti",
+    obat: "Losartan",
+    tanggal: "09-05-2025",
+    status: "Menunggu Pembayaran",
+  },
+  {
+    id: "RSP016",
+    pasien: "Indah Permata",
+    dokter: "dr. Bimo Prasetyo",
+    obat: "Salbutamol",
+    tanggal: "09-05-2025",
+    status: "Selesai",
+  },
+  {
+    id: "RSP017",
+    pasien: "Rizky Maulana",
+    dokter: "dr. Tri Handayani",
+    obat: "Chlorpheniramine",
+    tanggal: "10-05-2025",
+    status: "Sudah Bayar",
+  },
+  {
+    id: "RSP018",
+    pasien: "Mega Lestari",
+    dokter: "dr. Imam Susanto",
+    obat: "Ciprofloxacin",
+    tanggal: "10-05-2025",
+    status: "Diproses",
+  },
+  {
+    id: "RSP019",
+    pasien: "Galih Aditya",
+    dokter: "dr. Nurul Hidayah",
+    obat: "Doxycycline",
+    tanggal: "11-05-2025",
+    status: "Menunggu Pembayaran",
+  },
+  {
+    id: "RSP020",
+    pasien: "Wulan Sari",
+    dokter: "dr. Arief Kurniawan",
+    obat: "Acetaminophen",
+    tanggal: "11-05-2025",
+    status: "Selesai",
   },
 ];
 
 export default function EResep() {
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("");
+  const [lihatSemua, setLihatSemua] = useState(false);
 
-  // Filter
+  // Filter dan Sort
   const filtered = dataResep
     .filter((item) =>
       Object.values(item).some((val) =>
         val.toLowerCase().includes(search.toLowerCase())
       )
     )
-    // Sort
     .sort((a, b) => {
       if (sortBy === "id") return a.id.localeCompare(b.id);
       if (sortBy === "nama") return a.pasien.localeCompare(b.pasien);
@@ -56,6 +185,8 @@ export default function EResep() {
       if (sortBy === "obat") return a.obat.localeCompare(b.obat);
       return 0;
     });
+
+  const dataTampil = lihatSemua ? filtered : filtered.slice(0, 12);
 
   return (
     <div className="">
@@ -68,14 +199,7 @@ export default function EResep() {
         {/* Dropdown Sorting */}
         <div className="flex flex-wrap items-center gap-3 mt-4 mx-4 xs:mx-6 sm:mx-4 md:mx-4 lg:mx-4">
           <select
-            className="
-              border border-slate-400 
-              rounded 
-              px-3 py-2 
-              text-xs xs:text-sm sm:text-base md:text-lg 
-              outline-none 
-              transition
-            "
+            className="border border-slate-400 rounded px-3 py-2 text-xs xs:text-sm sm:text-base md:text-lg outline-none transition"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
           >
@@ -92,31 +216,12 @@ export default function EResep() {
           <input
             type="text"
             placeholder="Ketik ID Resep, Pasien, Dokter"
-            className="
-      w-full 
-      bg-[#E3EBF3] 
-      border-2 border-slate-300 focus:border-[#8bacc5] 
-      rounded 
-      pl-4 pr-12
-      py-2 text-xs xs:text-sm sm:text-base md:text-lg
-      outline-none
-      transition
-      placeholder:text-gray-400 placeholder:text-xs xs:placeholder:text-sm sm:placeholder:text-base md:placeholder:text-lg
-    "
+            className="w-full bg-[#E3EBF3] border-2 border-slate-300 focus:border-[#8bacc5] rounded pl-4 pr-12 py-2 text-xs xs:text-sm sm:text-base md:text-lg outline-none transition placeholder:text-gray-400 placeholder:text-xs xs:placeholder:text-sm sm:placeholder:text-base md:placeholder:text-lg"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
           <button
-            className="
-      absolute right-0 top-0 h-full 
-      text-white 
-      bg-[#87B6E5] 
-      px-4 xs:px-5 sm:px-6 
-      rounded-r 
-      hover:bg-[#64b1ff] 
-      transition 
-      flex items-center justify-center
-    "
+            className="absolute right-0 top-0 h-full text-white bg-[#87B6E5] px-4 xs:px-5 sm:px-6 rounded-r hover:bg-[#64b1ff] transition flex items-center justify-center"
             onClick={() => setSearch("")}
             aria-label="Clear search"
           >
@@ -148,7 +253,7 @@ export default function EResep() {
           </thead>
 
           <tbody>
-            {filtered.length === 0 ? (
+            {dataTampil.length === 0 ? (
               <tr>
                 <td
                   colSpan={7}
@@ -158,7 +263,7 @@ export default function EResep() {
                 </td>
               </tr>
             ) : (
-              filtered.map((item, index) => (
+              dataTampil.map((item, index) => (
                 <tr
                   key={item.id}
                   className={index % 2 === 1 ? "bg-[#E3EBF3]" : ""}
@@ -189,7 +294,24 @@ export default function EResep() {
             )}
           </tbody>
         </table>
+
+        {filtered.length > 12 && (
+          <div className="flex justify-center mt-4">
+            <button
+              className="px-4 py-2 bg-[#557187] text-white rounded hover:bg-[#2A4D69] transition text-sm md:text-base"
+              onClick={() => setLihatSemua(!lihatSemua)}
+            >
+              {lihatSemua ? "Sembunyikan" : "Lihat Semua"}
+            </button>
+          </div>
+        )}
       </div>
+
+      {/* Scroll to Top Bottom */}
+      <div className="rounded-full">
+        <ScrollToTopButton />
+      </div>
+      
       <Footer />
     </div>
   );

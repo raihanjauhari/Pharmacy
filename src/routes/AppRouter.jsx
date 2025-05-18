@@ -1,5 +1,4 @@
-// AppRouter.jsx
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 // Import Auth Login
 import Login from "../pages/auth/Login.jsx";
@@ -20,12 +19,30 @@ import LayoutAdmin from "../components/admin/Layout.jsx";
 import EResepAdmin from "../pages/admin/EResep.jsx";
 import ObatAdmin from "../pages/admin/Obat.jsx";
 
+// Import NotFound
+import NotFoundPage from "../NotFoundPage.jsx"; // pastikan path-nya benar ya
+
 const AppRouter = () => {
+  const role = localStorage.getItem("role");
+
   return (
     <BrowserRouter>
       <Routes>
+        {/* Redirect berdasarkan role */}
+        <Route
+          path="/"
+          element={
+            role === "admin" ? (
+              <Navigate to="/dashboard-admin" />
+            ) : role === "petugas" ? (
+              <Navigate to="/dashboard-petugas" />
+            ) : (
+              <Login />
+            )
+          }
+        />
+
         {/* AUTH ROUTER */}
-        <Route path="/" element={<Login />} />
         <Route path="/lupa-password" element={<LupaPassword />} />
         <Route path="/verifikasi-kode" element={<VerifyCode />} />
         <Route path="/buat-password-baru" element={<PasswordBaru />} />
@@ -44,6 +61,9 @@ const AppRouter = () => {
           <Route path="e-resep" element={<EResepAdmin />} />
           <Route path="obat" element={<ObatAdmin />} />
         </Route>
+
+        {/* 404 NOT FOUND */}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   );

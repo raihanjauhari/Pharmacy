@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, X } from "lucide-react"; // import ikon X untuk tombol hapus
 import Atta from "../../assets/doctor/Atta.jpeg";
 import Mae from "../../assets/doctor/Mae.jpeg";
 import Meri from "../../assets/doctor/Meri.jpeg";
@@ -20,6 +20,7 @@ const doctorImages = {
 };
 
 const eresepData = [
+  // data awal tetap
   {
     id: "PD001",
     status: "Diproses",
@@ -90,6 +91,30 @@ const NotificationDropdown = ({ onClose }) => {
   const dropdownRef = useRef(null);
   const [showAll, setShowAll] = useState(false);
 
+  // State notifications di sini supaya bisa dihapus
+  const [notifications, setNotifications] = useState(() => {
+    return eresepData.map((item, index) => ({
+      id: item.id,
+      text: (() => {
+        const { status, resep } = item;
+        switch (status) {
+          case "Menunggu Pembayaran":
+            return `e-Resep baru dari ${resep.namaDokter}`;
+          case "Sudah Bayar":
+            return `e-Resep pasien ${resep.namaPasien} telah dibayarkan`;
+          case "Diproses":
+            return `e-Resep pasien ${resep.namaPasien} telah diproses`;
+          case "Selesai":
+            return `e-Resep pasien ${resep.namaPasien} telah diambil`;
+          default:
+            return "Notifikasi e-Resep";
+        }
+      })(),
+      time: `${(index + 1) * 5} menit lalu`,
+      avatar: doctorImages[item.resep.namaDokter] || null,
+    }));
+  });
+
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -100,29 +125,6 @@ const NotificationDropdown = ({ onClose }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [onClose]);
 
-  const generateNotificationText = (item) => {
-    const { status, resep } = item;
-    switch (status) {
-      case "Menunggu Pembayaran":
-        return `e-Resep baru dari ${resep.namaDokter}`;
-      case "Sudah Bayar":
-        return `e-Resep pasien ${resep.namaPasien} telah dibayarkan`;
-      case "Diproses":
-        return `e-Resep pasien ${resep.namaPasien} telah diproses`;
-      case "Selesai":
-        return `e-Resep pasien ${resep.namaPasien} telah diambil`;
-      default:
-        return "Notifikasi e-Resep";
-    }
-  };
-
-  const notifications = eresepData.map((item, index) => ({
-    id: item.id,
-    text: generateNotificationText(item),
-    time: `${(index + 1) * 5} menit lalu`,
-    avatar: doctorImages[item.resep.namaDokter] || null,
-  }));
-
   const visibleNotifications = showAll
     ? notifications
     : notifications.slice(0, 4);
@@ -131,11 +133,15 @@ const NotificationDropdown = ({ onClose }) => {
     alert(`Notifikasi ${notifId} telah diklik!`);
   };
 
+  const handleDeleteNotification = (notifId) => {
+    setNotifications((prev) => prev.filter((notif) => notif.id !== notifId));
+  };
+
   return (
     <div
       ref={dropdownRef}
       className="absolute -right-20 mt-2 w-72 xs:w-80 sm:w-96 md:w-[28rem] lg:w-[32rem] bg-white rounded-lg shadow-lg z-50 border-2 flex flex-col"
-      style={{ transform: "translateX(1rem)" }} // sesuaikan supaya dropdown tidak keluar layar
+      style={{ transform: "translateX(1rem)" }}
     >
       <div className="bg-[#2A4D69] text-white font-semibold px-4 py-2 rounded-t-lg text-sm sm:text-base">
         Notifikasi
@@ -147,35 +153,50 @@ const NotificationDropdown = ({ onClose }) => {
         } overflow-y-auto`}
       >
         <ul className="divide-y divide-gray-200">
-          {visibleNotifications.map((notif) => (
-            <li key={notif.id}>
-              <button
-                onClick={() => handleNotificationClick(notif.id)}
-                className="flex items-start gap-3 p-2 xs:p-3 w-full text-left hover:bg-gray-50 focus:outline-none"
-              >
-                {notif.avatar ? (
-                  <img
-                    src={notif.avatar}
-                    alt={notif.text}
-                    className="w-8 h-8 xs:w-10 xs:h-10 rounded-full object-cover"
-                  />
-                ) : (
-                  <AlertCircle className="text-indigo-500 mt-1 w-6 h-6 xs:w-7 xs:h-7" />
-                )}
-                <div className="text-xs xs:text-sm">
-                  <p className="font-medium text-gray-900">{notif.text}</p>
-                  <p className="text-[10px] xs:text-xs text-gray-400">
-                    {notif.time}
-                  </p>
-                </div>
-              </button>
+          {visibleNotifications.length > 0 ? (
+            visibleNotifications.map((notif) => (
+              <li key={notif.id} className="flex items-center justify-between">
+                <button
+                  onClick={() => handleNotificationClick(notif.id)}
+                  className="flex items-start gap-3 p-2 xs:p-3 w-full text-left hover:bg-gray-50 focus:outline-none"
+                >
+                  {notif.avatar ? (
+                    <img
+                      src={notif.avatar}
+                      alt={notif.text}
+                      className="w-8 h-8 xs:w-10 xs:h-10 rounded-full object-cover"
+                    />
+                  ) : (
+                    <AlertCircle className="text-indigo-500 mt-1 w-6 h-6 xs:w-7 xs:h-7" />
+                  )}
+                  <div className="text-xs xs:text-sm">
+                    <p className="font-medium text-gray-900">{notif.text}</p>
+                    <p className="text-[10px] xs:text-xs text-gray-400">
+                      {notif.time}
+                    </p>
+                  </div>
+                </button>
+
+                {/* Tombol hapus */}
+                <button
+                  onClick={() => handleDeleteNotification(notif.id)}
+                  className="p-2 hover:bg-red-100 rounded-md ml-2"
+                  aria-label="Hapus notifikasi"
+                >
+                  <X className="w-5 h-5 text-red-500" />
+                </button>
+              </li>
+            ))
+          ) : (
+            <li className="p-4 text-center text-gray-500">
+              Tidak ada notifikasi
             </li>
-          ))}
+          )}
         </ul>
       </div>
 
       {!showAll && notifications.length > 5 && (
-        <div className="text-center py-2 border-t bg-white rounded-b-lg ">
+        <div className="text-center py-2 border-t bg-white rounded-b-lg">
           <button
             onClick={() => setShowAll(true)}
             className="xs:w-50 sm:w-85 md:w-100 lg:w-120 px-3 py-2 xs:px-4 xs:py-2.5 bg-[#557187] text-white rounded-md text-xs xs:text-sm hover:bg-[#2A4D69] transition-colors"
