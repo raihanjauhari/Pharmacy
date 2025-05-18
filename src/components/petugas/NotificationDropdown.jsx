@@ -5,6 +5,87 @@ import Mae from "../../assets/doctor/Mae.jpeg";
 import Meri from "../../assets/doctor/Meri.jpeg";
 import Nurman from "../../assets/doctor/Nurman.jpeg";
 
+const doctorImages = {
+  "dr. Atta": Atta,
+  "dr. Mae": Mae,
+  "dr. Meri": Meri,
+  "dr. Nurman": Nurman,
+  "dr. Lestari Wardhani": Mae,
+  "dr. Dewa Mahendra": Meri,
+  "dr. Ari Wibowo": Atta,
+  "dr. Nina Kartika": Nurman,
+  "dr. Bambang Sutrisno": Atta,
+  "dr. Sari Fitriani": Mae,
+  "dr. Rani Maulida": Meri,
+};
+
+const eresepData = [
+  {
+    id: "PD001",
+    status: "Diproses",
+    resep: {
+      namaPasien: "Anisa Aulya",
+      namaDokter: "dr. Lestari Wardhani",
+    },
+  },
+  {
+    id: "PD002",
+    status: "Menunggu Pembayaran",
+    resep: {
+      namaPasien: "Setya Adjie",
+      namaDokter: "dr. Dewa Mahendra",
+    },
+  },
+  {
+    id: "PD003",
+    status: "Sudah Bayar",
+    resep: {
+      namaPasien: "Putri Rahma",
+      namaDokter: "dr. Ari Wibowo",
+    },
+  },
+  {
+    id: "PD004",
+    status: "Selesai",
+    resep: {
+      namaPasien: "Bagas Pratama",
+      namaDokter: "dr. Nina Kartika",
+    },
+  },
+  {
+    id: "PD005",
+    status: "Sudah Bayar",
+    resep: {
+      namaPasien: "Neneknya DON",
+      namaDokter: "dr. Meri",
+    },
+  },
+  {
+    id: "PD006",
+    status: "Diproses",
+    resep: {
+      namaPasien: "Wahyu Kurniawan",
+      namaDokter: "dr. Bambang Sutrisno",
+    },
+  },
+  {
+    id: "PD007",
+    status: "Menunggu Pembayaran",
+    resep: {
+      namaPasien: "Lia Apriyani",
+      namaDokter: "dr. Sari Fitriani",
+    },
+  },
+  {
+    id: "PD008",
+    status: "Sudah Bayar",
+    resep: {
+      namaPasien: "Deni Yulianto",
+      namaDokter: "dr. Rani Maulida",
+    },
+  },
+];
+
 const NotificationDropdown = ({ onClose }) => {
   const dropdownRef = useRef(null);
   const [showAll, setShowAll] = useState(false);
@@ -19,68 +100,32 @@ const NotificationDropdown = ({ onClose }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [onClose]);
 
-  const notifications = [
-    {
-      id: 1,
-      type: "eresep",
-      text: "e-Resep baru dari dr. Atta",
-      time: "1 menit lalu",
-      avatar: Atta,
-    },
-    {
-      id: 2,
-      type: "eresep",
-      text: "e-Resep baru dari dr. Mae",
-      time: "5 menit lalu",
-      avatar: Meri,
-    },
-    {
-      id: 3,
-      type: "eresep",
-      text: "e-Resep baru dari dr. Nurman",
-      time: "15 menit lalu",
-      avatar: Mae,
-    },
-    {
-      id: 4,
-      type: "eresep",
-      text: "e-Resep baru dari dr. Meri",
-      time: "20 menit lalu",
-      avatar: Nurman,
-    },
-    {
-      id: 5,
-      type: "eresep",
-      text: "e-Resep baru dari dr. Atta",
-      time: "30 menit lalu",
-      avatar: Atta,
-    },
-    {
-      id: 6,
-      type: "eresep",
-      text: "e-Resep baru dari dr. Mae",
-      time: "45 menit lalu",
-      avatar: Mae,
-    },
-    {
-      id: 7,
-      type: "eresep",
-      text: "e-Resep baru dari dr. Meri",
-      time: "1 jam lalu",
-      avatar: Meri,
-    },
-    {
-      id: 8,
-      type: "eresep",
-      text: "e-Resep baru dari dr. Nurman",
-      time: "2 jam lalu",
-      avatar: Nurman,
-    },
-  ];
+  const generateNotificationText = (item) => {
+    const { status, resep } = item;
+    switch (status) {
+      case "Menunggu Pembayaran":
+        return `e-Resep baru dari ${resep.namaDokter}`;
+      case "Sudah Bayar":
+        return `e-Resep pasien ${resep.namaPasien} telah dibayarkan`;
+      case "Diproses":
+        return `e-Resep pasien ${resep.namaPasien} telah diproses`;
+      case "Selesai":
+        return `e-Resep pasien ${resep.namaPasien} telah diambil`;
+      default:
+        return "Notifikasi e-Resep";
+    }
+  };
+
+  const notifications = eresepData.map((item, index) => ({
+    id: item.id,
+    text: generateNotificationText(item),
+    time: `${(index + 1) * 5} menit lalu`,
+    avatar: doctorImages[item.resep.namaDokter] || null,
+  }));
 
   const visibleNotifications = showAll
     ? notifications
-    : notifications.slice(0, 5);
+    : notifications.slice(0, 4);
 
   const handleNotificationClick = (notifId) => {
     alert(`Notifikasi ${notifId} telah diklik!`);
@@ -95,7 +140,6 @@ const NotificationDropdown = ({ onClose }) => {
         Notifikasi
       </div>
 
-      {/* Scrollable */}
       <div className="max-h-120 overflow-y-auto">
         <ul className="divide-y divide-gray-200">
           {visibleNotifications.map((notif) => (
@@ -123,7 +167,6 @@ const NotificationDropdown = ({ onClose }) => {
         </ul>
       </div>
 
-      {/* Lihat Semua */}
       {!showAll && notifications.length > 5 && (
         <div className="text-center py-2 border-t bg-white rounded-b-lg">
           <button

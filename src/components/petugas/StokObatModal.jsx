@@ -5,74 +5,158 @@ import { X } from "lucide-react";
 const StokObatModal = ({ isOpen, onClose }) => {
   const dataStok = [
     {
-      id: 1,
+      id: "OB001",
       nama: "Paracetamol",
-      stok: 150,
-      satuan: "Tablet",
-      kadaluarsa: "2025-11-01",
+      stok: 0,
+      harga: 10000,
+      deskripsi: "Obat pereda demam dan nyeri.",
     },
     {
-      id: 2,
+      id: "OB002",
       nama: "Amoxicillin",
-      stok: 200,
-      satuan: "Kapsul",
-      kadaluarsa: "2026-01-10",
+      stok: 0,
+      harga: 8500,
+      deskripsi: "Antibiotik untuk infeksi bakteri.",
     },
     {
-      id: 3,
+      id: "OB003",
       nama: "Ibuprofen",
-      stok: 75,
-      satuan: "Tablet",
-      kadaluarsa: "2025-08-15",
+      stok: 0,
+      harga: 12000,
+      deskripsi: "Obat anti inflamasi non steroid.",
     },
     {
-      id: 4,
+      id: "OB004",
       nama: "Metformin",
-      stok: 120,
-      satuan: "Tablet",
-      kadaluarsa: "2026-03-05",
+      stok: 0,
+      harga: 15000,
+      deskripsi: "Obat untuk diabetes tipe 2.",
     },
     {
-      id: 5,
-      nama: "Cetirizine",
-      stok: 90,
-      satuan: "Tablet",
-      kadaluarsa: "2025-09-30",
-    },
-    {
-      id: 6,
+      id: "OB005",
       nama: "Loperamide",
-      stok: 45,
-      satuan: "Kapsul",
-      kadaluarsa: "2025-12-20",
+      stok: 0,
+      harga: 9000,
+      deskripsi: "Obat diare.",
     },
     {
-      id: 7,
+      id: "OB006",
+      nama: "Cetirizine",
+      stok: 0,
+      harga: 7000,
+      deskripsi: "Obat alergi dan antihistamin.",
+    },
+    {
+      id: "OB007",
       nama: "Omeprazole",
-      stok: 110,
-      satuan: "Tablet",
-      kadaluarsa: "2026-02-14",
+      stok: 0,
+      harga: 20000,
+      deskripsi: "Obat lambung dan GERD.",
     },
     {
-      id: 8,
+      id: "OB008",
+      nama: "Simvastatin",
+      stok: 0,
+      harga: 25000,
+      deskripsi: "Obat penurun kolesterol.",
+    },
+    {
+      id: "OB009",
       nama: "Dextromethorphan",
-      stok: 85,
-      satuan: "Sirup",
-      kadaluarsa: "2025-10-22",
+      stok: 0,
+      harga: 11000,
+      deskripsi: "Obat batuk.",
     },
     {
-      id: 9,
+      id: "OB010",
       nama: "Salbutamol",
-      stok: 70,
-      satuan: "Inhaler",
-      kadaluarsa: "2026-01-01",
+      stok: 0,
+      harga: 18000,
+      deskripsi: "Obat asma dan bronkodilator.",
     },
     {
-      id: 10,
+      id: "OB011",
       nama: "Ranitidine",
-      stok: 130,
-      satuan: "Tablet",
-      kadaluarsa: "2025-11-30",
+      stok: 0,
+      harga: 13000,
+      deskripsi: "Obat tukak lambung.",
+    },
+    {
+      id: "OB012",
+      nama: "Clarithromycin",
+      stok: 0,
+      harga: 27000,
+      deskripsi: "Antibiotik spektrum luas.",
+    },
+    {
+      id: "OB013",
+      nama: "Fluoxetine",
+      stok: 50,
+      harga: 30000,
+      deskripsi: "Obat antidepresan.",
+    },
+    {
+      id: "OB014",
+      nama: "Hydrochlorothiazide",
+      stok: 10,
+      harga: 22000,
+      deskripsi: "Obat diuretik untuk hipertensi.",
+    },
+    {
+      id: "OB015",
+      nama: "Levothyroxine",
+      stok: 70,
+      harga: 28000,
+      deskripsi: "Obat untuk hipotiroidisme.",
+    },
+    {
+      id: "OB016",
+      nama: "Gabapentin",
+      stok: 15,
+      harga: 35000,
+      deskripsi: "Obat untuk nyeri saraf.",
+    },
+    {
+      id: "OB017",
+      nama: "Diazepam",
+      stok: 0,
+      harga: 40000,
+      deskripsi: "Obat penenang dan antikejang.",
+    },
+    {
+      id: "OB018",
+      nama: "Prednisone",
+      stok: 5,
+      harga: 37000,
+      deskripsi: "Obat steroid anti inflamasi.",
+    },
+    {
+      id: "OB019",
+      nama: "Alprazolam",
+      stok: 40,
+      harga: 45000,
+      deskripsi: "Obat untuk kecemasan.",
+    },
+    {
+      id: "OB020",
+      nama: "Cetirizine",
+      stok: 55,
+      harga: 7000,
+      deskripsi: "Obat antihistamin untuk alergi.",
+    },
+    {
+      id: "OB021",
+      nama: "Metoprolol",
+      stok: 35,
+      harga: 29000,
+      deskripsi: "Obat untuk tekanan darah tinggi.",
+    },
+    {
+      id: "OB022",
+      nama: "Azithromycin",
+      stok: 65,
+      harga: 33000,
+      deskripsi: "Antibiotik makrolida.",
     },
   ];
 
@@ -85,6 +169,15 @@ const StokObatModal = ({ isOpen, onClose }) => {
   }, [isOpen]);
 
   const dataToShow = showAll ? dataStok : dataStok.slice(0, 5);
+
+  // Fungsi format harga ke rupiah
+  const formatRupiah = (number) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    }).format(number);
+  };
 
   return (
     <Transition show={isOpen} as={Fragment}>
@@ -134,8 +227,7 @@ const StokObatModal = ({ isOpen, onClose }) => {
                       <th className="px-6 py-4 text-center">No</th>
                       <th className="px-6 py-4 text-center">Nama Obat</th>
                       <th className="px-6 py-4 text-center">Stok</th>
-                      <th className="px-6 py-4 text-center">Satuan</th>
-                      <th className="px-6 py-4 text-center">Kadaluarsa</th>
+                      <th className="px-6 py-4 text-center">Harga Obat</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -150,14 +242,13 @@ const StokObatModal = ({ isOpen, onClose }) => {
                         <td className="px-6 py-3 text-center">{item.nama}</td>
                         <td
                           className={`px-6 py-3 text-center font-semibold ${
-                            item.stok < 100 ? "text-red-600" : "text-blue-600"
+                            item.stok === 0 ? "text-red-600" : "text-blue-600"
                           }`}
                         >
                           {item.stok}
                         </td>
-                        <td className="px-6 py-3 text-center">{item.satuan}</td>
-                        <td className="px-6 py-3 text-center">
-                          {item.kadaluarsa}
+                        <td className="px-6 py-3 text-center font-semibold text-green-700">
+                          {formatRupiah(item.harga)}
                         </td>
                       </tr>
                     ))}
@@ -169,7 +260,7 @@ const StokObatModal = ({ isOpen, onClose }) => {
                 <div className="text-center py-2 border-t bg-white rounded-b-lg">
                   <button
                     onClick={() => setShowAll(true)}
-                    className="w-50 px-4 py-2 mt-3  bg-[#33A7DC] text-white rounded-md hover:bg-[#5BA5C7]"
+                    className="w-50 px-4 py-2 mt-3 bg-[#33A7DC] text-white rounded-md hover:bg-[#5BA5C7]"
                   >
                     Lihat Semua Data
                   </button>

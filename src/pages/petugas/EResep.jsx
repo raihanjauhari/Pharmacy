@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import PetunjukEResep from "../../assets/PDF/petunjuk.pdf";
 import EResepModal from "../../components/petugas/ResepModal";
+import ScrollToTopButton from "../../components/petugas/ScrollToTopButton";
 
 const EResep = () => {
   const [data, setData] = useState([
@@ -270,21 +271,30 @@ const EResep = () => {
           <h1 className="text-xl md:text-2xl font-bold">E-Resep</h1>
           <p className="text-slate-600 mt-3">Menampilkan E-resep</p>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 px-4 justify-center sm:justify-start">
           {statusOptions.map((status) => (
             <button
               key={status}
               onClick={() => setStatusFilter(status)}
-              className={`px-4 py-2 rounded w-full sm:w-auto transition ${
-                statusFilter === status
-                  ? "bg-[#2A4D69] text-white"
-                  : "bg-[#557187] text-white hover:bg-[#2A4D69]"
-              }`}
+              className={`
+        rounded
+        transition
+        w-full 
+        px-3 py-2 text-sm  /* xs default */
+        sm:w-auto sm:px-4 sm:py-2 sm:text-base  /* sm dan seterusnya */
+        md:px-5 md:py-3 md:text-lg 
+        ${
+          statusFilter === status
+            ? "bg-[#2A4D69] text-white"
+            : "bg-[#557187] text-white hover:bg-[#2A4D69]"
+        }
+      `}
             >
               {status}
             </button>
           ))}
         </div>
+
         <div className="flex flex-wrap items-center gap-3 mt-4">
           <select
             className="border border-slate-400 rounded px-3 py-2 text-sm"
@@ -297,44 +307,80 @@ const EResep = () => {
             <option value="id">ID Pendaftaran (A-Z)</option>
           </select>
         </div>
-        <div className="relative mt-4">
+        <div className="relative mt-4 pr-4">
           <input
             type="text"
             placeholder="Ketik ID Pendaftaran, Nama Pasien / Nama Dokter"
-            className="w-full bg-[#E3EBF3] border-2 border-slate-300 focus:border-[#8bacc5] rounded pl-4 pr-10 py-2 text-sm outline-none"
+            className="
+      w-full 
+      bg-[#E3EBF3] 
+      border-2 border-slate-300 focus:border-[#8bacc5] 
+      rounded 
+      pl-4 pr-12 
+      py-2 text-sm 
+      sm:py-2.5 sm:text-base 
+      md:py-3 md:text-lg 
+      outline-none
+    "
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
           />
           <button
-            className="absolute -right-5 top-1/2 -translate-y-1/2 text-slate-500"
+            className="
+      absolute right-2 top-1/2 -translate-y-1/2 
+      text-slate-500
+    "
             onClick={() => setSearchText("")}
             aria-label="Clear search"
           >
-            <div className="bg-[#87B6E5] text-white py-2 px-4 rounded-sm hover:bg-[#64b1ff]">
-              <LucideSearch />
+            <div
+              className="
+        bg-[#87B6E5] text-white 
+        px-3 py-2 
+        sm:px-4 sm:py-2.5 
+        md:px-5 md:py-3 
+        rounded-sm 
+        hover:bg-[#64b1ff] 
+        transition
+      "
+            >
+              <LucideSearch size={20} className="sm:size-5 md:size-6" />
             </div>
           </button>
         </div>
-        <div className="overflow-x-auto">
-          <table className="min-w-[600px] md:min-w-full border-2 border-slate-400 text-sm">
+
+        <div className="w-full overflow-x-auto px-4">
+          <table className="min-w-full border-2 border-slate-400 text-[10px] sm:text-[11px] md:text-sm lg:text-base">
             <thead className="bg-[#557187] text-white">
               <tr>
-                <th className="border-2 border-slate-400 px-4 py-2">No</th>
-                <th className="border-2 border-slate-400 px-4 py-2">
-                  ID Pendaftaran
-                </th>
-                <th className="border-2 border-slate-400 px-4 py-2">
-                  Nama Pasien
-                </th>
-                <th className="border-2 border-slate-400 px-4 py-2">Dokter</th>
-                <th className="border-2 border-slate-400 px-4 py-2">Status</th>
-                <th className="border-2 border-slate-400 px-4 py-2">Detail</th>
+                {[
+                  { xs: "No", sm: "No", md: "No" },
+                  { xs: "ID", sm: "ID", md: "ID Pendaftaran" },
+                  { xs: "Pasien", sm: "Pasien", md: "Nama Pasien" },
+                  { xs: "Dokter", sm: "Dokter", md: "Nama Dokter" },
+                  { xs: "Sts", sm: "Status", md: "Status" },
+                  { xs: "Lht", sm: "Detail", md: "Detail" },
+                ].map((text, i) => (
+                  <th
+                    key={i}
+                    className="border-2 border-slate-400 text-center 
+              px-2 py-[2px] sm:px-3 sm:py-2 
+              md:px-4 md:py-2 lg:px-5"
+                  >
+                    <span className="block sm:hidden">{text.xs}</span>
+                    <span className="hidden sm:block md:hidden">{text.sm}</span>
+                    <span className="hidden md:block">{text.md}</span>
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
               {filteredAndSortedData.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="text-center text-slate-500 py-4">
+                  <td
+                    colSpan={6}
+                    className="text-center text-slate-500 py-4 text-[10px] sm:text-[11px] md:text-sm lg:text-base"
+                  >
                     Data tidak ditemukan
                   </td>
                 </tr>
@@ -344,35 +390,43 @@ const EResep = () => {
                     key={item.id}
                     className={idx % 2 === 1 ? "bg-[#E3EBF3]" : ""}
                   >
-                    <td className="border-2 border-slate-400 px-4 py-2 text-center">
+                    <td className="border-2 border-slate-400 text-center px-2 py-[2px] sm:px-3 sm:py-2 md:px-4 md:py-2">
                       {idx + 1}
                     </td>
-                    <td className="border-2 border-slate-400 px-4 py-2 text-center">
+                    <td className="border-2 border-slate-400 text-center px-2 py-[2px] sm:px-3 sm:py-2 md:px-4 md:py-2">
                       {item.id}
                     </td>
-                    <td className="border-2 border-slate-400 px-4 py-2">
-                      <td>{item.resep.namaPasien}</td>
+                    <td className="border-2 border-slate-400 px-2 py-[2px] sm:px-3 sm:py-2 md:px-4 md:py-2">
+                      {item.resep.namaPasien}
                     </td>
-                    <td className="border-2 border-slate-400 px-4 py-2">
+                    <td className="border-2 border-slate-400 px-2 py-[2px] sm:px-3 sm:py-2 md:px-4 md:py-2">
                       {item.resep.namaDokter}
                     </td>
-                    <td className="border-2 border-slate-400 px-4 py-2 text-center">
+                    <td className="border-2 border-slate-400 text-center px-2 py-[2px] sm:px-3 sm:py-2 md:px-4 md:py-2">
                       {item.status === "Diproses" ? (
                         <>
-                          <span className="inline-block bg-[#557187] text-white text-md font-semibold px-3 py-1 rounded-full shadow-sm">
+                          <span
+                            className="inline-block bg-[#557187] text-white font-semibold 
+                    text-[9px] sm:text-[10px] md:text-sm lg:text-base 
+                    px-2 py-[1px] sm:px-3 sm:py-[3px] rounded-full"
+                          >
                             Antrian Ke-{antreanMap[item.id]}
                           </span>
                           <button
                             onClick={() => selesaikanAntrian(item.id)}
-                            className="ml-2 bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700 text-xs"
+                            className="ml-1 bg-green-600 text-white 
+                      text-[9px] sm:text-[10px] md:text-xs lg:text-sm
+                      px-[4px] sm:px-[6px] py-[2px] rounded hover:bg-green-700"
                           >
-                            Selesaikan Antrian
+                            Selesai
                           </button>
                         </>
                       ) : item.status === "Sudah Bayar" ? (
                         <button
-                          className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
                           onClick={() => panggilPasien(item.id)}
+                          className="bg-blue-500 text-white 
+                    text-[9px] sm:text-[10px] md:text-xs lg:text-sm
+                    px-[6px] sm:px-[8px] py-[3px] rounded hover:bg-blue-600"
                         >
                           Panggil
                         </button>
@@ -380,12 +434,14 @@ const EResep = () => {
                         item.status
                       )}
                     </td>
-                    <td className="border-2 border-slate-400 px-4 py-2 text-center">
+                    <td className="border-2 border-slate-400 text-center px-2 py-[2px] sm:px-3 sm:py-2 md:px-4 md:py-2">
                       <button
-                        className="bg-[#557187] text-white px-3 py-1 rounded hover:bg-[#2A4D69]"
                         onClick={() => openModal(item.resep)}
+                        className="bg-[#557187] text-white 
+                  text-[9px] sm:text-[10px] md:text-xs lg:text-sm
+                  px-[6px] sm:px-[8px] py-[3px] rounded hover:bg-[#2A4D69]"
                       >
-                        Lihat e-Resep
+                        Lihat
                       </button>
                     </td>
                   </tr>
@@ -394,6 +450,7 @@ const EResep = () => {
             </tbody>
           </table>
         </div>
+
         <div className="mt-8 p-4 bg-[#F9FAFB] rounded-lg shadow-sm border border-slate-200">
           <div className="flex items-start gap-2 mb-2">
             <Info className="w-4 h-4 text-slate-600 mt-0.5" />
@@ -437,6 +494,9 @@ const EResep = () => {
       {showModal && selectedResep && (
         <EResepModal resep={selectedResep} onClose={closeModal} />
       )}
+
+      {/* Scroll to Top Bottom */}
+      <ScrollToTopButton />
 
       <Footer />
     </div>

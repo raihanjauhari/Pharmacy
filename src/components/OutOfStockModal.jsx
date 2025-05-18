@@ -2,6 +2,7 @@ import React, { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 
 const OutOfStockModal = ({ isOpen, onClose }) => {
+  // Data obat contoh (bisa diganti dengan data dari API)
   const dataObat = [
     { no: 1, nama: "Paracetamol", stok: 0, minimum: 10 },
     { no: 2, nama: "Amoxicillin", stok: 3, minimum: 10 },
@@ -15,12 +16,14 @@ const OutOfStockModal = ({ isOpen, onClose }) => {
     { no: 10, nama: "Ranitidine", stok: 9, minimum: 10 },
   ];
 
+  // Tentukan status stok obat
   const getStatus = (stok, min) => {
     if (stok === 0) return "Habis";
     if (stok < min) return "Hampir Habis";
     return "Aman";
   };
 
+  // Tentukan warna teks berdasarkan status
   const getStatusColor = (status) => {
     switch (status) {
       case "Habis":
@@ -32,19 +35,22 @@ const OutOfStockModal = ({ isOpen, onClose }) => {
     }
   };
 
+  // State untuk kontrol tampil semua data atau sebagian
   const [showAll, setShowAll] = useState(false);
 
+  // Data yang akan ditampilkan (5 pertama atau semua)
   const dataToShow = showAll ? dataObat : dataObat.slice(0, 5);
 
   return (
     <Transition show={isOpen} as={Fragment}>
       <Dialog
         onClose={() => {
-          setShowAll(false); // Reset tampilannya
-          onClose(); // Tutup modal
+          setShowAll(false); // Reset tampilan ke default saat modal ditutup
+          onClose(); // Panggil fungsi dari parent untuk tutup modal
         }}
         className="relative z-50"
       >
+        {/* Background overlay */}
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -60,6 +66,7 @@ const OutOfStockModal = ({ isOpen, onClose }) => {
           />
         </Transition.Child>
 
+        {/* Modal panel */}
         <div className="fixed inset-0 flex items-center justify-center p-4">
           <Transition.Child
             as={Fragment}
@@ -71,9 +78,10 @@ const OutOfStockModal = ({ isOpen, onClose }) => {
             leaveTo="opacity-0 scale-95 translate-y-4"
           >
             <Dialog.Panel className="w-full max-w-4xl rounded-2xl bg-white p-6 shadow-xl relative">
+              {/* Tombol Close */}
               <button
                 onClick={() => {
-                  setShowAll(false); // Reset saat tombol close ditekan
+                  setShowAll(false);
                   onClose();
                 }}
                 className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
@@ -95,10 +103,12 @@ const OutOfStockModal = ({ isOpen, onClose }) => {
                 </svg>
               </button>
 
+              {/* Judul Modal */}
               <Dialog.Title className="text-2xl font-semibold mb-4 text-center">
                 Daftar Stok Obat
               </Dialog.Title>
 
+              {/* Tabel stok obat */}
               <div className="overflow-x-auto">
                 <table className="w-full table-auto text-sm text-left text-gray-700">
                   <thead className="bg-[#D9635C] text-white text-xs uppercase">
@@ -141,6 +151,7 @@ const OutOfStockModal = ({ isOpen, onClose }) => {
                 </table>
               </div>
 
+              {/* Tombol Lihat Semua Data */}
               {!showAll && (
                 <div className="flex justify-center mt-4">
                   <button

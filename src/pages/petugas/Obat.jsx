@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Footer from "../../components/Footer";
 import { LucideSearch } from "lucide-react";
+import ScrollToTopButton from "../../components/petugas/ScrollToTopButton";
 
 const Obat = () => {
   const [lihatSemua, setLihatSemua] = useState(false);
@@ -312,6 +313,11 @@ const Obat = () => {
           </div>
         )}
       </div>
+
+      {/* Scroll to Top Bottom */}
+      <ScrollToTopButton />
+
+      {/* Footer */}
       <Footer />
     </div>
   );

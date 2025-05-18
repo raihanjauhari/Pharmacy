@@ -116,10 +116,12 @@ const Header = () => {
         {!showSearch && (
           <>
             <div className="sm:pl-9">
-              <h2 className="text-base sm:text-xl md:text-2xl lg:text-3xl text-[#2A4D69] font-semibold">
+              <h2 className="text-sm sm:text-base md:text-xl lg:text-2xl xl:text-3xl">
                 Selamat Datang
               </h2>
-              <p className="text-base sm:text-lg font-semibold">DON Jumbo</p>
+              <p className="text-xs sm:text-sm md:text-base lg:text-lg font-semibold">
+                DON Jumbo
+              </p>
             </div>
             <div className="flex items-center space-x-3">
               {/* Notification */}
