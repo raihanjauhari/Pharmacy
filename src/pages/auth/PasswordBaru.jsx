@@ -170,7 +170,7 @@ const PasswordBaru = () => {
 
           <button
             type="submit"
-            className="bg-[#2A4D69] text-white py-3 rounded-xl font-medium transition-colors hover:bg-[#2A4D69]/90 duration-200"
+            className="bg-[#2A4D69]/90 text-white py-3 rounded-xl font-medium transition-colors hover:bg-[#2A4D69] duration-200"
           >
             Ubah Password
           </button>

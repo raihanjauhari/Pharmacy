@@ -161,10 +161,10 @@ const LupaPassword = () => {
           <button
             type="submit"
             disabled={!isFormValid}
-            className={`bg-[#2A4D69] text-white py-3 rounded-xl font-medium transition-colors duration-200 ${
+            className={`bg-[#2A4D69]/90 text-white py-3 rounded-xl font-medium transition-colors duration-200 ${
               !isFormValid
                 ? "opacity-50 cursor-not-allowed"
-                : "hover:bg-[#2A4D69]/90"
+                : "hover:bg-[#2A4D69]"
             }`}
           >
             Kirim

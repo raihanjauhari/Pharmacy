@@ -1,51 +1,46 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import Logo from "../assets/logo.svg";
+import Logo from "../../assets/logo.svg";
 
 const Footer = () => {
-  const navigate = useNavigate();
-
-  const handleLogoClick = () => {
-    navigate("/dashboard-petugas"); // arahkan ke route dashboard
-  };
-
   return (
-    <footer className="bg-[#E3EBF3] dark:bg-gray-900   shadow-sm mt-15">
+    <footer className="bg-[#E3EBF3] dark:bg-gray-900 shadow-sm mt-15">
       <div className="max-w-screen-xl mx-auto px-4 py-6 md:py-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           {/* Logo dan Brand */}
           <div className="flex items-center space-x-3 mb-4 sm:mb-0">
-            <button
-              onClick={handleLogoClick}
-              className="flex items-center space-x-2"
-            >
+            <a href="/dashboard-admin" className="flex items-center space-x-2">
               <img src={Logo} className="h-8" alt="Pharmacy Logo" />
               <span className="text-2xl font-semibold text-gray-900 dark:text-gray-300">
                 PHARMACY
               </span>
-            </button>
+            </a>
           </div>
 
           {/* Navigasi Footer */}
           <nav aria-label="Footer Navigation">
             <ul className="flex flex-wrap items-center text-sm text-gray-600 dark:text-gray-400 font-medium space-x-4 md:space-x-6 hover:text-[#2A4D69]">
               <li>
-                <a href="#" className="hover:underline">
+                <a href="/dashboard-admin" className="hover:underline">
                   Dashboard
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:underline">
+                <a href="/dashboard-admin/e-resep" className="hover:underline">
                   EResep
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:underline">
+                <a href="/dashboard-admin/obat" className="hover:underline">
                   Obat
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:underline">
+                <a
+                  href="https://web.whatsapp.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
                   Bantuan
                 </a>
               </li>

@@ -108,10 +108,10 @@ const VerifikasiKode = () => {
           {/* Tombol Submit */}
           <button
             type="submit"
-            className={`bg-[#2A4D69] text-white py-3 rounded-xl font-medium mt-10 transition-colors hover:bg-[#2A4D69]/90 duration-200 w-full max-w-xs  ${
+            className={`bg-[#2A4D69]/90 text-white py-3 rounded-xl font-medium mt-10 transition-colors hover:bg-[#2A4D69] duration-200 w-full max-w-xs  ${
               isSubmitDisabled
                 ? "opacity-50 cursor-not-allowed"
-                : "hover:bg-[#2A4D69]/90"
+                : "hover:bg-[#2A4D69]"
             }`}
           >
             Kirim

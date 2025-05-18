@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import Footer from "../../components/Footer";
+import { LucideSearch } from "lucide-react";
 
 const dataResep = [
   {
@@ -37,83 +39,158 @@ const dataResep = [
 
 export default function EResep() {
   const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState("");
 
-  const filtered = dataResep.filter((item) =>
-    Object.values(item).some((val) =>
-      val.toLowerCase().includes(search.toLowerCase())
+  // Filter
+  const filtered = dataResep
+    .filter((item) =>
+      Object.values(item).some((val) =>
+        val.toLowerCase().includes(search.toLowerCase())
+      )
     )
-  );
+    // Sort
+    .sort((a, b) => {
+      if (sortBy === "id") return a.id.localeCompare(b.id);
+      if (sortBy === "nama") return a.pasien.localeCompare(b.pasien);
+      if (sortBy === "dokter") return a.dokter.localeCompare(b.dokter);
+      if (sortBy === "obat") return a.obat.localeCompare(b.obat);
+      return 0;
+    });
 
   return (
-    <div className="p-6 font-sans">
-      <h1 className="text-2xl font-bold mb-2">E-Resep</h1>
-      <p className="mb-4 text-gray-600">Cek E-Resep</p>
+    <div className="">
+      <div className="p-4 md:p-6 space-y-6">
+        <div>
+          <h1 className="text-xl md:text-2xl font-bold">E-Resep</h1>
+          <p className="text-slate-600 mt-3">Pantau E-resep</p>
+        </div>
 
-      {/* Filter Buttons */}
-      <div className="flex flex-wrap gap-2 mb-4">
-        <button className="bg-sky-800 hover:bg-sky-900 text-white px-4 py-2 rounded">
-          + ID Resep
-        </button>
-        <button className="bg-sky-800 hover:bg-sky-900 text-white px-4 py-2 rounded">
-          + Nama Pasien
-        </button>
-        <button className="bg-sky-800 hover:bg-sky-900 text-white px-4 py-2 rounded">
-          + Nama Dokter
-        </button>
-        <button className="bg-sky-800 hover:bg-sky-900 text-white px-4 py-2 rounded">
-          + Nama Dokter
-        </button>
-        <button className="bg-sky-800 hover:bg-sky-900 text-white px-4 py-2 rounded">
-          + Nama Dokter
-        </button>
-        <button className="bg-orange-400 hover:bg-orange-500 text-white px-4 py-2 rounded">
-          🔁 Reset
-        </button>
-      </div>
+        {/* Dropdown Sorting */}
+        <div className="flex flex-wrap items-center gap-3 mt-4 mx-4 xs:mx-6 sm:mx-4 md:mx-4 lg:mx-4">
+          <select
+            className="
+              border border-slate-400 
+              rounded 
+              px-3 py-2 
+              text-xs xs:text-sm sm:text-base md:text-lg 
+              outline-none 
+              transition
+            "
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+          >
+            <option value="">Urutkan</option>
+            <option value="id">ID Resep (A-Z)</option>
+            <option value="nama">Nama Pasien (A-Z)</option>
+            <option value="dokter">Nama Dokter (A-Z)</option>
+            <option value="obat">Nama Obat (A-Z)</option>
+          </select>
+        </div>
 
-      {/* Search Bar */}
-      <div className="flex items-center border-b border-gray-300 mb-4">
-        <input
-          type="text"
-          placeholder="Ketik ID Resep, Nama Pasien, Nama Dokter, Resep Obat"
-          className="flex-1 p-2 border border-gray-300 rounded-l"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <button className="bg-blue-600 text-white px-4 py-2 rounded-r hover:bg-blue-700">
-          🔍
-        </button>
-      </div>
+        {/* Search Bar */}
+        <div className="relative mt-4 mx-4 xs:mx-6 sm:mx-4 md:mx-4 lg:mx-4 pr-0 xs:pr-10 sm:pr-12 md:pr-12 lg:pr-12 xl:pr-12">
+          <input
+            type="text"
+            placeholder="Ketik ID Resep, Pasien, Dokter"
+            className="
+      w-full 
+      bg-[#E3EBF3] 
+      border-2 border-slate-300 focus:border-[#8bacc5] 
+      rounded 
+      pl-4 pr-12
+      py-2 text-xs xs:text-sm sm:text-base md:text-lg
+      outline-none
+      transition
+      placeholder:text-gray-400 placeholder:text-xs xs:placeholder:text-sm sm:placeholder:text-base md:placeholder:text-lg
+    "
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <button
+            className="
+      absolute right-0 top-0 h-full 
+      text-white 
+      bg-[#87B6E5] 
+      px-4 xs:px-5 sm:px-6 
+      rounded-r 
+      hover:bg-[#64b1ff] 
+      transition 
+      flex items-center justify-center
+    "
+            onClick={() => setSearch("")}
+            aria-label="Clear search"
+          >
+            <LucideSearch size={20} className="xs:size-5 sm:size-6 md:size-7" />
+          </button>
+        </div>
 
-      {/* Tabel */}
-      <div className="overflow-x-auto">
-        <table className="min-w-full border border-gray-300 text-sm">
-          <thead className="bg-gray-100">
+        {/* Table */}
+        <table className="min-w-full border-2 border-slate-400 text-[8px] sm:text-[11px] md:text-sm lg:text-base">
+          <thead className="bg-[#557187] text-white text-[7px] sm:text-[9px] md:text-xs lg:text-sm">
             <tr>
-              <th className="border px-3 py-2">No</th>
-              <th className="border px-3 py-2">ID Resep</th>
-              <th className="border px-3 py-2">Nama Pasien</th>
-              <th className="border px-3 py-2">Nama Dokter</th>
-              <th className="border px-3 py-2">Resep Obat</th>
-              <th className="border px-3 py-2">Tanggal Resep</th>
-              <th className="border px-3 py-2">Status</th>
+              {[
+                "No",
+                "ID Resep",
+                "Nama Pasien",
+                "Nama Dokter",
+                "Nama Obat",
+                "Tanggal Resep",
+                "Status",
+              ].map((text, i) => (
+                <th
+                  key={i}
+                  className="border-2 border-slate-400 text-center px-1 py-[1px] sm:px-2 sm:py-[3px] md:px-3 md:py-[4px] lg:px-4 lg:py-[6px]"
+                >
+                  {text}
+                </th>
+              ))}
             </tr>
           </thead>
+
           <tbody>
-            {filtered.map((item, index) => (
-              <tr key={item.id} className="text-center">
-                <td className="border px-3 py-2">{index + 1}</td>
-                <td className="border px-3 py-2">{item.id}</td>
-                <td className="border px-3 py-2">{item.pasien}</td>
-                <td className="border px-3 py-2">{item.dokter}</td>
-                <td className="border px-3 py-2">{item.obat}</td>
-                <td className="border px-3 py-2">{item.tanggal}</td>
-                <td className="border px-3 py-2">{item.status}</td>
+            {filtered.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={7}
+                  className="text-center text-slate-500 py-3 text-[8px] sm:text-[11px] md:text-sm lg:text-base"
+                >
+                  Data tidak ditemukan
+                </td>
               </tr>
-            ))}
+            ) : (
+              filtered.map((item, index) => (
+                <tr
+                  key={item.id}
+                  className={index % 2 === 1 ? "bg-[#E3EBF3]" : ""}
+                >
+                  <td className="border-2 border-slate-400 text-center px-1 py-[1px] sm:px-3 sm:py-2 md:px-4 md:py-2">
+                    {index + 1}
+                  </td>
+                  <td className="border-2 border-slate-400 text-center px-1 py-[1px] sm:px-3 sm:py-2 md:px-4 md:py-2">
+                    {item.id}
+                  </td>
+                  <td className="border-2 border-slate-400 px-1 py-[1px] sm:px-3 sm:py-2 md:px-4 md:py-2">
+                    {item.pasien}
+                  </td>
+                  <td className="border-2 border-slate-400 px-1 py-[1px] sm:px-3 sm:py-2 md:px-4 md:py-2">
+                    {item.dokter}
+                  </td>
+                  <td className="border-2 border-slate-400 px-1 py-[1px] sm:px-3 sm:py-2 md:px-4 md:py-2">
+                    {item.obat}
+                  </td>
+                  <td className="border-2 border-slate-400 text-center px-1 py-[1px] sm:px-3 sm:py-2 md:px-4 md:py-2">
+                    {item.tanggal}
+                  </td>
+                  <td className="border-2 border-slate-400 text-center px-1 py-[1px] sm:px-3 sm:py-2 md:px-4 md:py-2">
+                    {item.status}
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
+      <Footer />
     </div>
   );
 }

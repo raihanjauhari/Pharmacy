@@ -5,7 +5,7 @@ const ApotikChartCard = () => {
   const options = {
     chart: {
       type: "line",
-      height: 300,
+      height: 250,
       toolbar: { show: false },
       fontFamily: "Inter, sans-serif",
     },
@@ -65,7 +65,7 @@ const ApotikChartCard = () => {
   ];
 
   return (
-    <div className="w-full bg-white rounded-lg shadow-sm dark:bg-gray-800">
+    <div className="w-full bg-white border-2 border-gray-200 rounded-lg shadow-sm dark:bg-gray-800">
       <div className="flex justify-between p-4 md:p-6 pb-0 md:pb-0">
         <div>
           <h5 className="text-3xl font-bold text-gray-900 dark:text-white pb-2">
@@ -77,7 +77,7 @@ const ApotikChartCard = () => {
         </div>
       </div>
       <div className="px-4 pt-2">
-        <Chart options={options} series={series} type="line" height={300} />
+        <Chart options={options} series={series} type="line" height={250} />
       </div>
     </div>
   );

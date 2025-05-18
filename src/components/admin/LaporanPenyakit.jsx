@@ -6,6 +6,7 @@ const LaporanPenyakit = () => {
     chart: {
       type: "bar",
       stacked: true,
+      height: 250,
       toolbar: { show: false },
       fontFamily: "Inter, sans-serif",
     },
@@ -49,30 +50,21 @@ const LaporanPenyakit = () => {
   };
 
   const series = [
-    {
-      name: "Demam",
-      data: [30, 15, 30, 15, 20, 30],
-    },
-    {
-      name: "Batuk",
-      data: [10, 20, 5, 10, 10, 8],
-    },
-    {
-      name: "Diare",
-      data: [5, 10, 0, 5, 8, 6],
-    },
-    {
-      name: "Covid-19",
-      data: [20, 15, 15, 14, 15, 20],
-    },
+    { name: "Demam", data: [30, 15, 30, 15, 20, 30] },
+    { name: "Batuk", data: [10, 20, 5, 10, 10, 8] },
+    { name: "Diare", data: [5, 10, 0, 5, 8, 6] },
+    { name: "Covid-19", data: [20, 15, 15, 14, 15, 20] },
   ];
 
   return (
-    <div className="w-full bg-white rounded-xl shadow-sm p-4">
+    <div className="w-full bg-white border-2 border-gray-200 rounded-xl shadow-sm p-4">
       <div className="mb-2">
-        <h5 className="text-lg font-bold text-gray-900">Laporan Penyakit</h5>
+        <h5 className="text-3xl font-bold text-gray-900">Laporan Penyakit</h5>
+        <p className="text-base text-gray-500 dark:text-gray-400 mt-2">
+          Laporan Penyakit dalam 1 Minggu
+        </p>
       </div>
-      <Chart options={options} series={series} type="bar" height={300} />
+      <Chart options={options} series={series} type="bar" height={250} />
     </div>
   );
 };

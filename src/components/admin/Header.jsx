@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { LucideBell, LucideSearch, LucideX } from "lucide-react";
-import Jumbo from "../../assets/jumbo.jpeg";
-import NotificationDropdown from "./NotificationDropDown";
+import IbuJumbo from "../../assets/Ibujumbo.png";
+import NotificationDropdown from "./NotificationDropdown";
 import ProfileDropdown from "./ProfileDropDown";
 
 const Header = () => {
@@ -12,6 +12,8 @@ const Header = () => {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const profileRef = useRef(null);
   const [showNotif, setShowNotif] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [notifCount, setNotifCount] = useState(4); // jumlah badge notifikasi
 
   useEffect(() => {
     const handleResize = () => {
@@ -37,11 +39,9 @@ const Header = () => {
         setShowSearch(false);
       }
     };
-
     if (showSearch && !isDesktop) {
       document.addEventListener("mousedown", handleClickOutside);
     }
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -57,8 +57,27 @@ const Header = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Hilangkan badge saat showNotif dibuka
+  useEffect(() => {
+    if (showNotif) {
+      setNotifCount(0);
+    }
+  }, [showNotif]);
+
   return (
-    <div className="sticky top-0 z-50 bg-white flex justify-between items-center p-4 border-b-2 border-t-2 border-[#2A4D69]">
+    <div
+      className={`sticky top-0 z-50 flex justify-between items-center p-4 border-b-2 border-t-2 border-[#2A4D69] transition-colors duration-300 ${
+        isScrolled ? "bg-white/80 backdrop-blur-sm shadow-md" : "bg-white"
+      }`}
+    >
       {/* Search */}
       <div className="flex items-center space-x-5 flex-grow-0 relative">
         {(isDesktop || showSearch) && (
@@ -73,7 +92,7 @@ const Header = () => {
               type="text"
               ref={inputRef}
               placeholder="Pencarian..."
-              className="bg-[#E3EBF3] pl-10 pr-8 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2A4D69] w-auto sm:w-[500px] md:w-[500px] lg:w-[500px]"
+              className="bg-[#E3EBF3] pl-10 pr-8 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8bacc5] w-auto sm:w-[500px] md:w-[500px] lg:w-[500px]"
             />
             <button
               onClick={() => setShowSearch(false)}
@@ -85,7 +104,6 @@ const Header = () => {
             </button>
           </div>
         )}
-
         {!isDesktop && !showSearch && (
           <button onClick={() => setShowSearch(true)}>
             <LucideSearch size={28} className="text-gray-600" />
@@ -93,38 +111,43 @@ const Header = () => {
         )}
       </div>
 
-      {/* Teks + Notifikasi */}
+      {/* Welcome & Icons */}
       <div className="flex items-center space-x-5">
         {!showSearch && (
           <>
             <div className="sm:pl-9">
-              <h2 className="text-base sm:text-xl md:text-2xl lg:text-3xl text-[#2A4D69] font-semibold">
+              <h2 className="text-sm sm:text-base md:text-xl lg:text-2xl xl:text-3xl">
                 Selamat Datang
               </h2>
-              <p className="text-base sm:text-lg font-semibold">DON Jumbo</p>
+              <p className="text-xs sm:text-sm md:text-base lg:text-lg font-semibold">
+                Ibu Jumbo
+              </p>
             </div>
-
             <div className="flex items-center space-x-3">
+              {/* Notification */}
               <div className="relative" ref={notifRef}>
                 <button
                   className="relative text-2xl text-gray-600 notif-bell"
                   onClick={() => setShowNotif((prev) => !prev)}
                 >
                   <LucideBell size={26} className="hover:text-indigo-600" />
-                  <span className="absolute top-0 right-0 mt-1 mr-4 flex justify-center items-center bg-indigo-600 text-white font-semibold text-[10px] w-5 h-5 rounded-full border-2 border-white">
-                    4
-                  </span>
+                  {notifCount > 0 && (
+                    <span className="absolute top-0 right-0 mt-1 mr-4 flex justify-center items-center bg-indigo-600 text-white font-semibold text-[10px] w-5 h-5 rounded-full border-2 border-white">
+                      {notifCount}
+                    </span>
+                  )}
                 </button>
                 {showNotif && (
                   <NotificationDropdown onClose={() => setShowNotif(false)} />
                 )}
               </div>
 
+              {/* Profile */}
               <div className="relative" ref={profileRef}>
                 <button onClick={() => setShowProfileMenu((prev) => !prev)}>
                   <img
-                    src={Jumbo}
-                    alt="DON Jumbo"
+                    src={IbuJumbo}
+                    alt="Ibu Jumbo"
                     className="w-12 h-12 rounded-full border-4 border-indigo-400 contrast-150 hover:contrast-70"
                   />
                 </button>

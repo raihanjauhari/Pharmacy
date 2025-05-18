@@ -72,7 +72,7 @@ const ResepModal = ({ resep, onClose }) => {
             <span className="font-semibold">Poli:</span> {resep.poli}
           </div>
           <div>
-            <span className="font-semibold">Tanggal Resep:</span>{" "}
+            <span className="font-semibold">Tanggal e-Resep:</span>{" "}
             {resep.tanggalResep}
           </div>
           <div>

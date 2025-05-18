@@ -140,9 +140,7 @@ const Dashboard = () => {
       min-h-[36px] sm:min-h-[42px] md:min-h-[48px] lg:min-h-[52px]
     "
                 >
-                  {item.title === "02"
-                    ? "Stok Sekarang"
-                    : "Lihat Detail Laporan"}
+                  {item.title === "02" ? "Stok Sekarang" : "Lihat Laporan"}
                   <LucideCircleArrowRight className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 lg:w-7 lg:h-7" />
                 </button>
               </div>

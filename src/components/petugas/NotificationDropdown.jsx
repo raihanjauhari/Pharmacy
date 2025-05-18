@@ -134,32 +134,39 @@ const NotificationDropdown = ({ onClose }) => {
   return (
     <div
       ref={dropdownRef}
-      className="absolute -right-20 translate-x-4 mt-2 w-96 bg-white rounded-lg shadow-lg z-50 border-2 flex flex-col"
+      className="absolute -right-20 mt-2 w-72 xs:w-80 sm:w-96 md:w-[28rem] lg:w-[32rem] bg-white rounded-lg shadow-lg z-50 border-2 flex flex-col"
+      style={{ transform: "translateX(1rem)" }} // sesuaikan supaya dropdown tidak keluar layar
     >
-      <div className="bg-[#2A4D69] text-white font-semibold px-4 py-2 rounded-t-lg">
+      <div className="bg-[#2A4D69] text-white font-semibold px-4 py-2 rounded-t-lg text-sm sm:text-base">
         Notifikasi
       </div>
 
-      <div className="max-h-120 overflow-y-auto">
+      <div
+        className={`${
+          showAll ? "max-h-[25rem]" : "max-h-80 sm:max-h-96"
+        } overflow-y-auto`}
+      >
         <ul className="divide-y divide-gray-200">
           {visibleNotifications.map((notif) => (
             <li key={notif.id}>
               <button
                 onClick={() => handleNotificationClick(notif.id)}
-                className="flex items-start gap-3 p-3 w-full text-left hover:bg-gray-50 focus:outline-none"
+                className="flex items-start gap-3 p-2 xs:p-3 w-full text-left hover:bg-gray-50 focus:outline-none"
               >
                 {notif.avatar ? (
                   <img
                     src={notif.avatar}
                     alt={notif.text}
-                    className="w-10 h-10 rounded-full object-cover"
+                    className="w-8 h-8 xs:w-10 xs:h-10 rounded-full object-cover"
                   />
                 ) : (
-                  <AlertCircle className="text-indigo-500 mt-1" />
+                  <AlertCircle className="text-indigo-500 mt-1 w-6 h-6 xs:w-7 xs:h-7" />
                 )}
-                <div className="text-sm">
+                <div className="text-xs xs:text-sm">
                   <p className="font-medium text-gray-900">{notif.text}</p>
-                  <p className="text-xs text-gray-400">{notif.time}</p>
+                  <p className="text-[10px] xs:text-xs text-gray-400">
+                    {notif.time}
+                  </p>
                 </div>
               </button>
             </li>
@@ -168,10 +175,10 @@ const NotificationDropdown = ({ onClose }) => {
       </div>
 
       {!showAll && notifications.length > 5 && (
-        <div className="text-center py-2 border-t bg-white rounded-b-lg">
+        <div className="text-center py-2 border-t bg-white rounded-b-lg ">
           <button
             onClick={() => setShowAll(true)}
-            className="w-90 px-4 py-2 bg-[#557187] text-white rounded-md hover:bg-[#2A4D69]"
+            className="xs:w-50 sm:w-85 md:w-100 lg:w-120 px-3 py-2 xs:px-4 xs:py-2.5 bg-[#557187] text-white rounded-md text-xs xs:text-sm hover:bg-[#2A4D69] transition-colors"
           >
             Lihat Semua Notifikasi
           </button>

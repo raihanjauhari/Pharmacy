@@ -31,7 +31,7 @@ const SummaryCard2 = ({ title, linkText, linkAction, items }) => {
               text-[0.55rem] sm:text-[0.6rem] md:text-[0.65rem] lg:text-[0.7rem]
             "
           >
-            &raquo;
+             
           </span>
         </button>
       </div>

@@ -30,9 +30,7 @@ const SummaryCard2 = ({ title, linkText, linkAction, items }) => {
             className="inline-block
               text-[0.55rem] sm:text-[0.6rem] md:text-[0.65rem] lg:text-[0.7rem]
             "
-          >
-            &raquo;
-          </span>
+          ></span>
         </button>
       </div>
 
