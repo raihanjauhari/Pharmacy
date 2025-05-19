@@ -1,16 +1,16 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import NotFoundImage from "./assets/404.jpg"; // Gambar kamu
+import React from "react"
+import { useNavigate } from "react-router-dom"
+import NotFoundImage from "./assets/404.jpg" // Gambar kamu
 
 export default function NotFoundPage() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-white px-4 text-center -mt-15">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-white px-4 text-center -mt-0">
       <img
         src={NotFoundImage}
         alt="Ilustrasi Halaman Tidak Ditemukan"
-        className="w-[350px] sm:w-[500px] mb-3"
+        className="w-[300px] sm:w-[300px] mb-3"
       />
 
       <h2 className="text-4xl  font-bold text-blue-700 mb-4">
@@ -28,5 +28,5 @@ export default function NotFoundPage() {
         Kembali ke Beranda
       </button>
     </div>
-  );
+  )
 }

@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { AlertCircle, X } from "lucide-react"; // tambah ikon X untuk hapus
+import React, { useEffect, useRef, useState } from "react"
+import { AlertCircle, X } from "lucide-react" // tambah ikon X untuk hapus
 
 const obatData = [
   { id: "OB001", namaObat: "Paracetamol", stok: 10, stokMinimal: 15 },
@@ -17,58 +17,58 @@ const obatData = [
   { id: "OB013", namaObat: "Obat Sakit Kepala", stok: 8, stokMinimal: 10 },
   { id: "OB014", namaObat: "Obat Maag", stok: 9, stokMinimal: 12 },
   { id: "OB015", namaObat: "Vitamin B12", stok: 2, stokMinimal: 4 },
-];
+]
 
 const generateObatNotification = (obat) => {
   if (obat.stok === 0) {
-    return `Obat ${obat.namaObat} telah habis! Segera lakukan pengisian stok.`;
+    return `Obat ${obat.namaObat} telah habis! Segera lakukan pengisian stok.`
   } else if (obat.stok <= obat.stokMinimal) {
-    return `Stok obat ${obat.namaObat} hampir habis (${obat.stok} tersisa).`;
+    return `Stok obat ${obat.namaObat} hampir habis (${obat.stok} tersisa).`
   } else {
-    return null;
+    return null
   }
-};
+}
 
 const NotificationDropdown = ({ onClose }) => {
-  const dropdownRef = useRef(null);
-  const [showAll, setShowAll] = useState(false);
+  const dropdownRef = useRef(null)
+  const [showAll, setShowAll] = useState(false)
 
   // State notifikasi yang tampil dan bisa dihapus
   const [notifications, setNotifications] = useState(() => {
     return obatData
       .map((obat, index) => {
-        const text = generateObatNotification(obat);
-        if (!text) return null;
+        const text = generateObatNotification(obat)
+        if (!text) return null
         return {
           id: obat.id,
           text,
           time: `${(index + 1) * 10} menit lalu`,
-        };
+        }
       })
-      .filter(Boolean);
-  });
+      .filter(Boolean)
+  })
 
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        onClose();
+        onClose()
       }
     }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [onClose]);
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [onClose])
 
   const visibleNotifications = showAll
     ? notifications
-    : notifications.slice(0, 4);
+    : notifications.slice(0, 4)
 
   const handleNotificationClick = (notifId) => {
-    alert(`Notifikasi obat dengan id ${notifId} telah diklik!`);
-  };
+    alert(`Notifikasi obat dengan id ${notifId} telah diklik!`)
+  }
 
   const handleDeleteNotification = (notifId) => {
-    setNotifications((prev) => prev.filter((notif) => notif.id !== notifId));
-  };
+    setNotifications((prev) => prev.filter((notif) => notif.id !== notifId))
+  }
 
   return (
     <div
@@ -89,13 +89,13 @@ const NotificationDropdown = ({ onClose }) => {
           {visibleNotifications.length > 0 ? (
             visibleNotifications.map((notif) => (
               <li key={notif.id}>
-                <div className="flex items-center justify-between p-3 hover:bg-gray-50">
+                <div className="flex items-center justify-between p-1 hover:bg-gray-50">
                   <button
                     onClick={() => handleNotificationClick(notif.id)}
                     className="flex items-center gap-3 text-left flex-1 focus:outline-none"
                   >
                     <AlertCircle className="text-red-500 w-6 h-6" />
-                    <div className="text-sm text-gray-900">{notif.text}</div>
+                    <div className="text-xs text-gray-900">{notif.text}</div>
                   </button>
                   <button
                     onClick={() => handleDeleteNotification(notif.id)}
@@ -126,7 +126,7 @@ const NotificationDropdown = ({ onClose }) => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default NotificationDropdown;
+export default NotificationDropdown
