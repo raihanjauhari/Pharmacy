@@ -288,7 +288,7 @@ const Obat = () => {
               <tr>
                 {[
                   "No",
-                  "ID Obat",
+                  "Kode Obat",
                   "Nama Obat",
                   "Stok",
                   "Harga Satuan",

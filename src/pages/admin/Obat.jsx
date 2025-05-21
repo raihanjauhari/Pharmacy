@@ -176,14 +176,6 @@ const Obat = () => {
     // logika edit bisa disambungkan ke modal atau routing edit
   };
 
-  const handleDelete = (id) => {
-    const konfirmasi = window.confirm("Yakin ingin menghapus obat ini?");
-    if (konfirmasi) {
-      alert(`Obat dengan ID ${id} berhasil dihapus (simulasi).`);
-      // implementasi delete asli bisa ditambahkan jika pakai state atau API
-    }
-  };
-
   const parseHarga = (hargaStr) =>
     parseInt(hargaStr.replace("Rp. ", "").replace(/\./g, "").replace(",", ""));
 
@@ -211,7 +203,7 @@ const Obat = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="p-6">
+      <div className="p-3">
         <div>
           <h1 className="text-2xl font-bold">Obat</h1>
           <p className="text-slate-600">
@@ -299,7 +291,7 @@ const Obat = () => {
               <tr>
                 {[
                   "No",
-                  "ID Obat",
+                  "Kode Obat",
                   "Nama Obat",
                   "Stok",
                   "Harga Satuan",
@@ -353,22 +345,12 @@ const Obat = () => {
                       <div className="flex sm:flex-row flex-col justify-center items-center gap-2 bg-white p-1 rounded-md shadow">
                         <button
                           onClick={() => handleEdit(obat)}
-                          className="text-white bg-blue-600 hover:bg-blue-800 px-2 py-1 rounded w-full sm:w-auto"
+                          className="text-white bg-blue-800 hover:bg-blue-600 px-2 py-1 rounded w-full sm:w-auto"
                           title="Edit"
                         >
                           <div className="flex items-center justify-center gap-1">
                             <Pencil size={16} />
                             <span className="hidden sm:inline">Edit</span>
-                          </div>
-                        </button>
-                        <button
-                          onClick={() => handleDelete(obat.id)}
-                          className="text-white bg-red-600 hover:bg-red-800 px-2 py-1 rounded w-full sm:w-auto"
-                          title="Hapus"
-                        >
-                          <div className="flex items-center justify-center gap-1">
-                            <Trash2 size={16} />
-                            <span className="hidden sm:inline">Hapus</span>
                           </div>
                         </button>
                       </div>

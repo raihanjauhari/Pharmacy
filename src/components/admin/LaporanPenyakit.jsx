@@ -61,7 +61,7 @@ const LaporanPenyakit = () => {
       <div className="mb-2">
         <h5 className="text-3xl font-bold text-gray-900">Laporan Penyakit</h5>
         <p className="text-base text-gray-500 dark:text-gray-400 mt-2">
-          Laporan Penyakit dalam 1 Minggu
+          Laporan Penyakit dalam 1 Bulan
         </p>
       </div>
       <Chart options={options} series={series} type="bar" height={250} />

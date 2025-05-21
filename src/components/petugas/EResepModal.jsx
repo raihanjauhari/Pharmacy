@@ -87,7 +87,7 @@ const EresepModal = ({ isOpen, onClose }) => {
                 <table className="w-full table-auto text-sm text-left text-gray-700">
                   <thead className="bg-[#E3C731] text-white text-xs uppercase">
                     <tr>
-                      <th className="px-6 py-4 text-center">ID</th>
+                      <th className="px-6 py-4 text-center">No</th>
                       <th className="px-6 py-4 text-center">Pasien</th>
                       <th className="px-6 py-4 text-center">Dokter</th>
                       <th className="px-6 py-4 text-center">Status</th>
