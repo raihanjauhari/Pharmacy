@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import Footer from "../../components/Footer";
 import { PlusCircle, Pencil, Trash2, Search } from "lucide-react";
 import ScrollToTopButton from "../../components/admin/ScrollToTopBotton";
+import AddObatForm from "../../components/admin/AddObatForm";
+import EditObatForm from "../../components/admin/EditObatForm";
+import { useEffect } from "react";
 
 const originalData = [
   {
@@ -170,14 +173,33 @@ const originalData = [
 const Obat = () => {
   const [sortBy, setSortBy] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [selectedObat, setSelectedObat] = useState(null);
 
   const handleEdit = (obat) => {
-    alert(`Edit obat: ${obat.nama}`);
-    // logika edit bisa disambungkan ke modal atau routing edit
+    setSelectedObat(obat);
   };
 
-  const parseHarga = (hargaStr) =>
-    parseInt(hargaStr.replace("Rp. ", "").replace(/\./g, "").replace(",", ""));
+  const handleCloseEdit = () => {
+    setSelectedObat(null);
+  };
+
+  useEffect(() => {
+    if (showAddForm || selectedObat) {
+      // Hilangkan scroll di body
+      document.body.style.overflow = "hidden";
+    } else {
+      // Kembalikan scroll normal
+      document.body.style.overflow = "auto";
+    }
+
+    // Cleanup saat komponen unmount atau kondisi berubah
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [showAddForm, selectedObat]);
+
+  const parseHarga = (hargaStr) => parseInt(hargaStr.replace(/[^\d]/g, ""), 10);
 
   // Filter dulu berdasarkan searchQuery
   const filteredData = originalData.filter(
@@ -203,7 +225,7 @@ const Obat = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <div className="p-3">
+      <div className="p-4">
         <div>
           <h1 className="text-2xl font-bold">Obat</h1>
           <p className="text-slate-600">
@@ -267,6 +289,7 @@ const Obat = () => {
         {/* Tombol Tambah */}
         <div className="flex mb-4 mt-6 ml-4 mr-4">
           <button
+            onClick={() => setShowAddForm(true)}
             className={`
       rounded
       transition
@@ -346,7 +369,7 @@ const Obat = () => {
                         <button
                           onClick={() => handleEdit(obat)}
                           className="text-white bg-blue-800 hover:bg-blue-600 px-2 py-1 rounded w-full sm:w-auto"
-                          title="Edit"
+                          title="Edit Obat"
                         >
                           <div className="flex items-center justify-center gap-1">
                             <Pencil size={16} />
@@ -378,6 +401,14 @@ const Obat = () => {
       <div className="rounded-full">
         <ScrollToTopButton />
       </div>
+
+      {/* Form Tambah Obat */}
+      {showAddForm && <AddObatForm onClose={() => setShowAddForm(false)} />}
+
+      {/* Form Edit Obat */}
+      {selectedObat && (
+        <EditObatForm obat={selectedObat} onClose={handleCloseEdit} />
+      )}
 
       <Footer />
     </div>

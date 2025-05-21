@@ -13,7 +13,7 @@ const Form = () => {
   const [loginSuccess, setLoginSuccess] = useState(false);
 
   // State untuk mengontrol visibilitas password
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState("");
 
   // State untuk menyimpan data form (email dan password)
   const [formData, setFormData] = useState({
@@ -68,18 +68,19 @@ const Form = () => {
   // Menangani Form Submit
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    // Cek tipe password untuk menentukan role
-    if (formData.password === "Admin123") {
-      setUserRole("admin");
-      setLoginSuccess(true);
-      setErrorMessage("");
-    } else if (formData.password === "Petugas123") {
+    if (formData.password === "Petugas123") {
       setUserRole("petugas");
+      localStorage.setItem("role", "petugas");
       setLoginSuccess(true);
-      setErrorMessage("");
+      // langsung navigasi ke dashboard petugas
+      navigate("/dashboard-petugas");
+    } else if (formData.password === "Admin123") {
+      setUserRole("admin");
+      localStorage.setItem("role", "admin");
+      setLoginSuccess(true);
+      navigate("/dashboard-admin");
     } else {
-      setPasswordError("Password salah. Silakan coba lagi.");
+      setErrorMessage("Password salah");
       setLoginSuccess(false);
     }
   };
@@ -87,16 +88,23 @@ const Form = () => {
   // Menangani klik di luar form untuk menghapus error message
   // Navigasi otomatis jika login berhasil
   useEffect(() => {
-    if (loginSuccess) {
-      setTimeout(() => {
+    if (loginSuccess && userRole) {
+      const timeout = setTimeout(() => {
         if (userRole === "admin") {
           navigate("/dashboard-admin");
         } else if (userRole === "petugas") {
           navigate("/dashboard-petugas");
         }
       }, 3000);
+
+      return () => clearTimeout(timeout);
     }
   }, [loginSuccess, userRole, navigate]);
+
+  useEffect(() => {
+    console.log("Login Success:", loginSuccess);
+    console.log("User Role:", userRole);
+  }, [loginSuccess, userRole]);
 
   return (
     <div

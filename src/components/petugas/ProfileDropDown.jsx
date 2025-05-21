@@ -36,8 +36,11 @@ const ProfileDropdown = () => {
         <button
           className="flex items-center justify-center gap-2 text-red-600 w-full h-9 sm:h-10 text-sm sm:text-base hover:bg-gray-100 rounded-md transition-colors"
           onClick={() => {
-            localStorage.removeItem("token");
-            navigate("/");
+            setTimeout(() => {
+              localStorage.removeItem("token");
+              localStorage.removeItem("role"); // Hapus role juga
+              navigate("/");
+            }, 1000); // delay 1000 ms = 1 detik
           }}
         >
           <LucideLogOut className="text-red-500 w-4 h-4 sm:w-5 sm:h-5" />
