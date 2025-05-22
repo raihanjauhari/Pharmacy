@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Footer from "../../components/Footer";
 import { LucideSearch } from "lucide-react";
 import ScrollToTopButton from "../../components/petugas/ScrollToTopButton";
@@ -8,163 +9,18 @@ const Obat = () => {
   const [statusFilter, setStatusFilter] = useState("Semua");
   const [sortBy, setSortBy] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [dataObat, setDataObat] = useState([]);
 
-  const dataObat = [
-    {
-      id: "OB001",
-      nama: "Paracetamol",
-      stok: 0,
-      harga: 10000,
-      deskripsi: "Obat pereda demam dan nyeri.",
-    },
-    {
-      id: "OB002",
-      nama: "Amoxicillin",
-      stok: 0,
-      harga: 8500,
-      deskripsi: "Antibiotik untuk infeksi bakteri.",
-    },
-    {
-      id: "OB003",
-      nama: "Ibuprofen",
-      stok: 0,
-      harga: 12000,
-      deskripsi: "Obat anti inflamasi non steroid.",
-    },
-    {
-      id: "OB004",
-      nama: "Metformin",
-      stok: 0,
-      harga: 15000,
-      deskripsi: "Obat untuk diabetes tipe 2.",
-    },
-    {
-      id: "OB005",
-      nama: "Loperamide",
-      stok: 0,
-      harga: 9000,
-      deskripsi: "Obat diare.",
-    },
-    {
-      id: "OB006",
-      nama: "Cetirizine",
-      stok: 0,
-      harga: 7000,
-      deskripsi: "Obat alergi dan antihistamin.",
-    },
-    {
-      id: "OB007",
-      nama: "Omeprazole",
-      stok: 0,
-      harga: 20000,
-      deskripsi: "Obat lambung dan GERD.",
-    },
-    {
-      id: "OB008",
-      nama: "Simvastatin",
-      stok: 0,
-      harga: 25000,
-      deskripsi: "Obat penurun kolesterol.",
-    },
-    {
-      id: "OB009",
-      nama: "Dextromethorphan",
-      stok: 0,
-      harga: 11000,
-      deskripsi: "Obat batuk.",
-    },
-    {
-      id: "OB010",
-      nama: "Salbutamol",
-      stok: 0,
-      harga: 18000,
-      deskripsi: "Obat asma dan bronkodilator.",
-    },
-    {
-      id: "OB011",
-      nama: "Ranitidine",
-      stok: 0,
-      harga: 13000,
-      deskripsi: "Obat tukak lambung.",
-    },
-    {
-      id: "OB012",
-      nama: "Clarithromycin",
-      stok: 0,
-      harga: 27000,
-      deskripsi: "Antibiotik spektrum luas.",
-    },
-    {
-      id: "OB013",
-      nama: "Fluoxetine",
-      stok: 50,
-      harga: 30000,
-      deskripsi: "Obat antidepresan.",
-    },
-    {
-      id: "OB014",
-      nama: "Hydrochlorothiazide",
-      stok: 10,
-      harga: 22000,
-      deskripsi: "Obat diuretik untuk hipertensi.",
-    },
-    {
-      id: "OB015",
-      nama: "Levothyroxine",
-      stok: 70,
-      harga: 28000,
-      deskripsi: "Obat untuk hipotiroidisme.",
-    },
-    {
-      id: "OB016",
-      nama: "Gabapentin",
-      stok: 15,
-      harga: 35000,
-      deskripsi: "Obat untuk nyeri saraf.",
-    },
-    {
-      id: "OB017",
-      nama: "Diazepam",
-      stok: 0,
-      harga: 40000,
-      deskripsi: "Obat penenang dan antikejang.",
-    },
-    {
-      id: "OB018",
-      nama: "Prednisone",
-      stok: 5,
-      harga: 37000,
-      deskripsi: "Obat steroid anti inflamasi.",
-    },
-    {
-      id: "OB019",
-      nama: "Alprazolam",
-      stok: 40,
-      harga: 45000,
-      deskripsi: "Obat untuk kecemasan.",
-    },
-    {
-      id: "OB020",
-      nama: "Cetirizine",
-      stok: 55,
-      harga: 7000,
-      deskripsi: "Obat antihistamin untuk alergi.",
-    },
-    {
-      id: "OB021",
-      nama: "Metoprolol",
-      stok: 35,
-      harga: 29000,
-      deskripsi: "Obat untuk tekanan darah tinggi.",
-    },
-    {
-      id: "OB022",
-      nama: "Azithromycin",
-      stok: 65,
-      harga: 33000,
-      deskripsi: "Antibiotik makrolida.",
-    },
-  ];
+  useEffect(() => {
+    axios
+      .get("http://127.0.0.1:3000/api/obat")
+      .then((res) => {
+        setDataObat(res.data);
+      })
+      .catch((err) => {
+        console.error("Gagal mengambil data obat:", err);
+      });
+  }, []);
 
   const filteredByStatus = dataObat.filter((item) => {
     if (statusFilter === "Stok Habis") return item.stok === 0;
@@ -174,15 +30,15 @@ const Obat = () => {
   const filteredBySearch = filteredByStatus.filter((item) => {
     const query = searchQuery.toLowerCase();
     return (
-      item.id.toLowerCase().includes(query) ||
-      item.nama.toLowerCase().includes(query)
+      item.kode_obat.toLowerCase().includes(query) ||
+      item.nama_obat.toLowerCase().includes(query)
     );
   });
 
   const sortedData = [...filteredBySearch].sort((a, b) => {
-    if (sortBy === "nama") return a.nama.localeCompare(b.nama);
+    if (sortBy === "nama") return a.nama_obat.localeCompare(b.nama_obat);
     if (sortBy === "stok") return b.stok - a.stok;
-    if (sortBy === "harga") return a.harga - b.harga;
+    if (sortBy === "harga") return a.harga_satuan - b.harga_satuan;
     return 0;
   });
 
@@ -316,23 +172,23 @@ const Obat = () => {
               ) : (
                 dataTampil.map((obat, idx) => (
                   <tr
-                    key={obat.id}
+                    key={obat.kode_obat}
                     className={idx % 2 === 1 ? "bg-[#E3EBF3]" : ""}
                   >
                     <td className="border-2 border-slate-400 text-center px-2 py-[2px] sm:px-3 sm:py-2 md:px-4 md:py-2">
                       {idx + 1}
                     </td>
                     <td className="border-2 border-slate-400 text-center px-2 py-[2px] sm:px-3 sm:py-2 md:px-4 md:py-2">
-                      {obat.id}
+                      {obat.kode_obat}
                     </td>
                     <td className="border-2 border-slate-400 px-2 py-[2px] sm:px-3 sm:py-2 md:px-4 md:py-2">
-                      {obat.nama}
+                      {obat.nama_obat}
                     </td>
                     <td className="border-2 border-slate-400 text-center px-2 py-[2px] sm:px-3 sm:py-2 md:px-4 md:py-2">
                       {obat.stok}
                     </td>
                     <td className="border-2 border-slate-400 text-center px-2 py-[2px] sm:px-3 sm:py-2 md:px-4 md:py-2">
-                      Rp. {obat.harga.toLocaleString("id-ID")}
+                      Rp. {obat.harga_satuan.toLocaleString("id-ID")}
                     </td>
                     <td className="border-2 border-slate-400 px-2 py-[2px] sm:px-3 sm:py-2 md:px-4 md:py-2">
                       {obat.deskripsi}

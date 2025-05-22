@@ -1,199 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Footer from "../../components/Footer";
-import { PlusCircle, Pencil, Trash2, Search } from "lucide-react";
+import { PlusCircle, Pencil, Search } from "lucide-react";
 import ScrollToTopButton from "../../components/admin/ScrollToTopBotton";
 import AddObatForm from "../../components/admin/AddObatForm";
 import EditObatForm from "../../components/admin/EditObatForm";
-import { useEffect } from "react";
-
-const originalData = [
-  {
-    id: "OB001",
-    nama: "Paracetamol",
-    stok: 100,
-    harga: "Rp. 10.000",
-    poli: "Poli Umum",
-    deskripsi: "Obat penurun demam dan penghilang nyeri",
-  },
-  {
-    id: "OB002",
-    nama: "Amoxicillin",
-    stok: 75,
-    harga: "Rp. 8.500",
-    poli: "Poli Gigi",
-    deskripsi: "Antibiotik untuk infeksi bakteri",
-  },
-  {
-    id: "OB003",
-    nama: "Insto",
-    stok: 50,
-    harga: "Rp. 16.000",
-    poli: "Poli Mata",
-    deskripsi: "Obat tetes mata untuk iritasi",
-  },
-  {
-    id: "OB004",
-    nama: "Cefadroxil",
-    stok: 60,
-    harga: "Rp. 11.500",
-    poli: "Poli Bedah",
-    deskripsi: "Antibiotik pasca operasi",
-  },
-  {
-    id: "OB005",
-    nama: "Dexamethasone",
-    stok: 40,
-    harga: "Rp. 7.000",
-    poli: "Poli Umum",
-    deskripsi: "Obat anti-inflamasi",
-  },
-  {
-    id: "OB006",
-    nama: "Cataflam",
-    stok: 30,
-    harga: "Rp. 20.000",
-    poli: "Poli Bedah",
-    deskripsi: "Obat penghilang nyeri dan radang",
-  },
-  {
-    id: "OB007",
-    nama: "Albothyl",
-    stok: 45,
-    harga: "Rp. 18.000",
-    poli: "Poli Gigi",
-    deskripsi: "Obat sariawan dan antiseptik",
-  },
-  {
-    id: "OB008",
-    nama: "Visine",
-    stok: 20,
-    harga: "Rp. 15.000",
-    poli: "Poli Mata",
-    deskripsi: "Obat tetes mata untuk merah",
-  },
-  {
-    id: "OB009",
-    nama: "Ibuprofen",
-    stok: 30,
-    harga: "Rp. 9.000",
-    poli: "Poli Umum",
-    deskripsi: "Obat anti nyeri dan inflamasi",
-  },
-  {
-    id: "OB010",
-    nama: "Gentamicin",
-    stok: 40,
-    harga: "Rp. 12.000",
-    poli: "Poli Mata",
-    deskripsi: "Antibiotik tetes mata",
-  },
-
-  {
-    id: "OB011",
-    nama: "Cetirizine",
-    stok: 55,
-    harga: "Rp. 13.000",
-    poli: "Poli Umum",
-    deskripsi: "Obat antihistamin untuk alergi",
-  },
-  {
-    id: "OB012",
-    nama: "Loratadine",
-    stok: 50,
-    harga: "Rp. 12.500",
-    poli: "Poli Umum",
-    deskripsi: "Antihistamin non-sedatif",
-  },
-  {
-    id: "OB013",
-    nama: "Metformin",
-    stok: 70,
-    harga: "Rp. 15.000",
-    poli: "Poli Umum",
-    deskripsi: "Obat untuk diabetes tipe 2",
-  },
-  {
-    id: "OB014",
-    nama: "Salbutamol",
-    stok: 35,
-    harga: "Rp. 25.000",
-    poli: "Poli Paru",
-    deskripsi: "Obat bronkodilator untuk asma",
-  },
-  {
-    id: "OB015",
-    nama: "Omeprazole",
-    stok: 45,
-    harga: "Rp. 18.000",
-    poli: "Poli Gastro",
-    deskripsi: "Obat pengurang asam lambung",
-  },
-  {
-    id: "OB016",
-    nama: "Simvastatin",
-    stok: 40,
-    harga: "Rp. 22.000",
-    poli: "Poli Jantung",
-    deskripsi: "Obat penurun kolesterol",
-  },
-  {
-    id: "OB017",
-    nama: "Diazepam",
-    stok: 30,
-    harga: "Rp. 20.000",
-    poli: "Poli Psikiatri",
-    deskripsi: "Obat penenang dan anti-kecemasan",
-  },
-  {
-    id: "OB018",
-    nama: "Ibuprofen",
-    stok: 50,
-    harga: "Rp. 9.000",
-    poli: "Poli Umum",
-    deskripsi: "Obat anti nyeri dan inflamasi",
-  },
-  {
-    id: "OB019",
-    nama: "Ranitidine",
-    stok: 60,
-    harga: "Rp. 14.000",
-    poli: "Poli Gastro",
-    deskripsi: "Obat pengurang asam lambung",
-  },
-  {
-    id: "OB020",
-    nama: "Fluconazole",
-    stok: 25,
-    harga: "Rp. 30.000",
-    poli: "Poli Kulit",
-    deskripsi: "Obat antijamur",
-  },
-];
+import axios from "axios";
 
 const Obat = () => {
+  const [originalData, setOriginalData] = useState([]);
   const [sortBy, setSortBy] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [showAddForm, setShowAddForm] = useState(false);
   const [selectedObat, setSelectedObat] = useState(null);
+  const [lihatSemua, setLihatSemua] = useState(false);
 
-  const handleEdit = (obat) => {
-    setSelectedObat(obat);
+  // Fetch data obat dari API
+  // ...di bagian atas komponen Obat
+  const fetchObat = () => {
+    axios
+      .get("http://127.0.0.1:3000/api/obat")
+      .then((response) => {
+        setOriginalData(response.data);
+      })
+      .catch((error) => {
+        console.error("Gagal memuat data obat:", error);
+      });
   };
 
-  const handleCloseEdit = () => {
-    setSelectedObat(null);
-  };
-
+  // panggil fetchObat di useEffect
   useEffect(() => {
-    if (showAddForm || selectedObat) {
-      // Hilangkan scroll di body
-      document.body.style.overflow = "hidden";
-    } else {
-      // Kembalikan scroll normal
-      document.body.style.overflow = "auto";
-    }
+    fetchObat();
+  }, []);
 
-    // Cleanup saat komponen unmount atau kondisi berubah
+  const handleEdit = (obat) => setSelectedObat(obat);
+  const handleCloseEdit = () => setSelectedObat(null);
+
+  // Nonaktifkan scroll jika modal tambah/edit terbuka
+  useEffect(() => {
+    document.body.style.overflow =
+      showAddForm || selectedObat ? "hidden" : "auto";
     return () => {
       document.body.style.overflow = "auto";
     };
@@ -204,23 +49,22 @@ const Obat = () => {
   // Filter dulu berdasarkan searchQuery
   const filteredData = originalData.filter(
     (obat) =>
-      obat.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      obat.nama.toLowerCase().includes(searchQuery.toLowerCase())
+      obat.kode_obat.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      obat.nama_obat.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Lalu urutkan hasil filter
   const sortedData = [...filteredData].sort((a, b) => {
     if (sortBy === "nama") {
-      return a.nama.localeCompare(b.nama);
+      return a.nama_obat.localeCompare(b.nama_obat);
     } else if (sortBy === "stok") {
       return b.stok - a.stok;
     } else if (sortBy === "harga") {
-      return parseHarga(a.harga) - parseHarga(b.harga);
+      return parseHarga(a.harga_satuan) - parseHarga(b.harga_satuan);
     }
     return 0;
   });
 
-  const [lihatSemua, setLihatSemua] = useState(false);
   const dataTampil = lihatSemua ? sortedData : sortedData.slice(0, 12);
 
   return (
@@ -350,16 +194,17 @@ const Obat = () => {
                       {idx + 1}
                     </td>
                     <td className="border-2 border-slate-400 text-center">
-                      {obat.id}
+                      {obat.kode_obat}
                     </td>
+
                     <td className="border-2 border-slate-400 px-2">
-                      {obat.nama}
+                      {obat.nama_obat}
                     </td>
                     <td className="border-2 border-slate-400 text-center">
                       {obat.stok}
                     </td>
                     <td className="border-2 border-slate-400 text-center">
-                      {obat.harga}
+                      {obat.harga_satuan}
                     </td>
                     <td className="border-2 border-slate-400 px-2">
                       {obat.deskripsi}
@@ -403,7 +248,15 @@ const Obat = () => {
       </div>
 
       {/* Form Tambah Obat */}
-      {showAddForm && <AddObatForm onClose={() => setShowAddForm(false)} />}
+      {showAddForm && (
+        <AddObatForm
+          onClose={() => setShowAddForm(false)}
+          onSuccess={() => {
+            fetchObat(); // refresh data setelah tambah obat berhasil
+            setShowAddForm(false); // tutup form
+          }}
+        />
+      )}
 
       {/* Form Edit Obat */}
       {selectedObat && (
