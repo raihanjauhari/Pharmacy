@@ -7,6 +7,7 @@ import Banner from "../assets/banner.jpg";
 import Background from "../assets/Background.jpg";
 import { Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Form = () => {
   // State untuk menangani login sukses atau tidak
@@ -66,27 +67,40 @@ const Form = () => {
   };
 
   // Menangani Form Submit
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.password === "Petugas123") {
-      setUserRole("petugas");
-      localStorage.setItem("role", "petugas");
-      setLoginSuccess(true);
-      // langsung navigasi ke dashboard petugas
-      navigate("/dashboard-petugas");
-    } else if (formData.password === "Admin123") {
-      setUserRole("admin");
-      localStorage.setItem("role", "admin");
-      setLoginSuccess(true);
-      navigate("/dashboard-admin");
-    } else {
-      setErrorMessage("Password salah");
-      setLoginSuccess(false);
+
+    try {
+      const response = await axios.get("http://127.0.0.1:3000/api/user");
+      const users = response.data;
+
+      const userByEmail = users.find((user) => user.email === formData.email);
+
+      if (!userByEmail) {
+        setLoginSuccess(false);
+        setErrorMessage("Email tidak ditemukan.");
+      } else if (userByEmail.password !== formData.password) {
+        setLoginSuccess(false);
+        setErrorMessage("Password salah.");
+      } else {
+        setUserRole(userByEmail.role);
+        setLoginSuccess(true);
+        localStorage.setItem("role", userByEmail.role);
+        localStorage.setItem("user", JSON.stringify(userByEmail));
+
+        if (userByEmail.role === "admin") {
+          navigate("/dashboard-admin");
+        } else if (userByEmail.role === "petugas") {
+          navigate("/dashboard-petugas");
+        }
+      }
+    } catch (error) {
+      console.error("Gagal login:", error);
+      setErrorMessage("Terjadi kesalahan saat menghubungi server.");
     }
   };
 
   // Menangani klik di luar form untuk menghapus error message
-  // Navigasi otomatis jika login berhasil
   useEffect(() => {
     if (loginSuccess && userRole) {
       const timeout = setTimeout(() => {

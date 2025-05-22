@@ -8,6 +8,7 @@ const VerifikasiKode = () => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [errorMessage, setErrorMessage] = useState("");
   const formRef = useRef(null);
+  const navigate = useNavigate();
 
   // Fungsi handle input angka OTP
   const handleInputChange = (e, index) => {
@@ -35,14 +36,40 @@ const VerifikasiKode = () => {
   };
 
   // Submit OTP
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const kode = otp.join("");
-    if (kode !== "123456") {
+    const code = otp.join(""); // sesuaikan nama variabel
+    const email = localStorage.getItem("reset_email");
+
+    if (!email) {
       setErrorMessage("Kode verifikasi salah.");
-    } else {
-      setErrorMessage("");
-      navigate("/buat-password-baru"); // ⬅️ Tambahkan ini
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/user/verify-reset-code",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ code, email }), // <-- di sini gunakan 'code'
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setErrorMessage("");
+        localStorage.removeItem("reset_email");
+        navigate("/buat-password-baru");
+      } else {
+        setErrorMessage(data.error || "Kode verifikasi salah.");
+      }
+    } catch (error) {
+      setErrorMessage("Terjadi kesalahan saat mengirim kode.");
+      console.error(error);
     }
   };
 
@@ -62,8 +89,6 @@ const VerifikasiKode = () => {
 
   const isSubmitDisabled = otp.some((digit) => digit === "");
 
-  const navigate = useNavigate();
-
   return (
     <div
       className="grid place-content-center min-h-screen px-4 py-5 md:px-8 md:py-10 bg-cover bg-center bg-no-repeat"
@@ -81,15 +106,15 @@ const VerifikasiKode = () => {
             <img src={Logo} alt="logo" className="-ml-5" />
             <h2 className="font-bold text-3xl text-[#1D242E]">Pharmacy</h2>
           </div>
-          {/* Header Form - Judul dan deskripsi form */}
+          {/* Header Form */}
           <h2 className="text-3xl font-bold text-[#2A4D69] text-center">
             Periksa Email Kamu
           </h2>
           <p className="text-[#000000] px-16 pt-1 -mt-3 text-center">
-            Kami Mengirim link reset ke Email kamu Masukkan 6 digit kode yang
-            ada di Email kamu
+            Kami Mengirim link reset ke Email kamu. Masukkan 6 digit kode yang
+            ada di Email kamu.
           </p>
-          {/* Email Input */}
+          {/* Input OTP */}
           <div className="flex items-center justify-center gap-3">
             {otp.map((digit, index) => (
               <input
@@ -108,15 +133,16 @@ const VerifikasiKode = () => {
           {/* Tombol Submit */}
           <button
             type="submit"
-            className={`bg-[#2A4D69]/90 text-white py-3 rounded-xl font-medium mt-10 transition-colors hover:bg-[#2A4D69] duration-200 w-full max-w-xs  ${
+            className={`bg-[#2A4D69]/90 text-white py-3 rounded-xl font-medium mt-10 transition-colors duration-200 w-full max-w-xs ${
               isSubmitDisabled
                 ? "opacity-50 cursor-not-allowed"
                 : "hover:bg-[#2A4D69]"
             }`}
+            disabled={isSubmitDisabled}
           >
             Kirim
           </button>
-          {/* Link untuk lupa password */}
+          {/* Link kembali */}
           <p className="text-center text-[#000000]">
             Kembali ke halaman{" "}
             <Link to={"/"} className="text-[#2A4D69] hover:underline">
@@ -125,7 +151,7 @@ const VerifikasiKode = () => {
           </p>
         </form>
 
-        {/* Banner Gambar di sebelah kanan (untuk tampilan layar lebih besar) */}
+        {/* Banner kanan */}
         <div className="hidden md:block relative bg-[#2A4D69] rounded-lg">
           <img
             src={Banner}
@@ -138,7 +164,7 @@ const VerifikasiKode = () => {
             <h2 className="mb-5 text-3xl font-semibold text-[#E3EBF3]">
               Verifikasi Email
             </h2>
-            <p className="font-[#E3EBF3] text-justify">
+            <p className="text-[#E3EBF3] text-justify">
               Tenang, kami bantu Anda memulihkannya. Silakan masukkan email Anda
               untuk menerima tautan reset.
             </p>

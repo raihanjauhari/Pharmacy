@@ -54,12 +54,11 @@ const LupaPassword = () => {
   };
 
   // Menangani Form Submit
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     let hasError = false;
 
-    // Validasi kosong
     if (!formData.email.trim()) {
       setEmailError("Email tidak boleh kosong.");
       hasError = true;
@@ -68,17 +67,40 @@ const LupaPassword = () => {
       hasError = true;
     }
 
-    // Jika ada error, hentikan proses
     if (hasError) {
       setLoginSuccess(false);
       return;
     }
 
-    // Simulasi sukses kirim email reset
-    setLoginSuccess(true);
-    setEmailError("");
-    setErrorMessage("");
-    navigate("/verifikasi-kode"); // Redirect ke halaman berikutnya
+    try {
+      // Kirim ke backend endpoint lupa password
+      const response = await fetch(
+        "http://localhost:3000/api/user/send-reset-code",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: formData.email }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem("reset_email", formData.email); // ✅ Tambahkan ini
+        setLoginSuccess(true);
+        setErrorMessage("");
+        navigate("/verifikasi-kode");
+      } else {
+        setErrorMessage(data.message || "Gagal mengirim email verifikasi.");
+        setLoginSuccess(false);
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMessage("Terjadi kesalahan pada server.");
+      setLoginSuccess(false);
+    }
   };
 
   const isFormValid = formData.email.trim() && !emailError;
