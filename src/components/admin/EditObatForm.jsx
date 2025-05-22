@@ -1,15 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { X } from "lucide-react";
 
-export default function EditObatForm({ onClose }) {
-  const [formData, setFormData] = useState({
-    kode_obat: "OBT001",
-    id_user: "U002",
-    nama_obat: "Paracetamol",
-    harga_satuan: 2500,
-    stok: 100,
-    deskripsi: "Obat pereda demam dan nyeri ringan.",
-  });
+export default function EditObatForm({ onClose, dataObat, onSuccess }) {
+  const [formData, setFormData] = useState(dataObat || {});
+
+  useEffect(() => {
+    if (dataObat) {
+      setFormData(dataObat); // isi ulang ketika data berubah
+    }
+  }, [dataObat]);
 
   const [isVisible, setIsVisible] = useState(false);
   const modalRef = useRef();
@@ -39,20 +38,65 @@ export default function EditObatForm({ onClose }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     if ((name === "harga_satuan" || name === "stok") && Number(value) < 0) {
       return;
     }
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value === "" ? "" : value,
+    }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (Number(formData.stok) < 0 || Number(formData.harga_satuan) < 0) {
+
+    // Konversi stok dan harga_satuan ke number sebelum submit
+    const dataToSend = {
+      ...formData,
+      stok: Number(formData.stok),
+      harga_satuan: Number(formData.harga_satuan),
+    };
+
+    if (dataToSend.stok < 0 || dataToSend.harga_satuan < 0) {
       alert("Stok dan harga satuan tidak boleh kurang dari 0!");
       return;
     }
-    console.log("Data obat diubah:", formData);
-    handleCloseButton();
+
+    console.log("Kirim data:", dataToSend);
+
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:3000/api/obat/${dataToSend.kode_obat}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(dataToSend),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error detail:", errorData);
+        throw new Error("Gagal mengupdate data");
+      }
+
+      const updatedData = await response.json();
+      console.log("Data berhasil diupdate:", updatedData);
+      alert("Data obat berhasil diubah!");
+
+      if (onSuccess) {
+        onSuccess(updatedData); // beri tahu parent kalau update berhasil
+      }
+
+      handleCloseButton(); // Tutup modal setelah sukses
+    } catch (error) {
+      console.error("Error saat update data:", error);
+      alert("Terjadi kesalahan saat mengubah data");
+    }
   };
 
   return (
@@ -119,9 +163,15 @@ function FormObat({ formData, handleChange, handleSubmit }) {
               name={field}
               value={formData[field]}
               onChange={handleChange}
-              className="w-full border border-slate-300 focus:ring-2 focus:ring-[#8bacc5] focus:outline-none px-3 sm:px-4 py-2 sm:py-3 rounded-lg transition resize-none text-sm sm:text-base"
+              className={`w-full border border-slate-300 px-3 sm:px-4 py-2 sm:py-3 rounded-lg transition resize-none text-sm sm:text-base
+      ${
+        field === "kode_obat" || field === "id_user"
+          ? "bg-gray-100 cursor-not-allowed"
+          : "focus:ring-2 focus:ring-[#8bacc5] focus:outline-none"
+      }`}
               rows="4"
               placeholder="Tulis deskripsi obat..."
+              readOnly={field === "kode_obat" || field === "id_user"}
             />
           ) : (
             <input
@@ -132,8 +182,14 @@ function FormObat({ formData, handleChange, handleSubmit }) {
               value={formData[field]}
               onChange={handleChange}
               min={["harga_satuan", "stok"].includes(field) ? 0 : undefined}
-              className="w-full border border-slate-300 focus:ring-2 focus:ring-[#8bacc5] focus:outline-none px-3 sm:px-4 py-2 sm:py-3 rounded-lg transition text-sm sm:text-base"
+              className={`w-full border border-slate-300 px-3 sm:px-4 py-2 sm:py-3 rounded-lg transition text-sm sm:text-base
+      ${
+        field === "kode_obat" || field === "id_user"
+          ? "bg-gray-100 cursor-not-allowed"
+          : "focus:ring-2 focus:ring-[#8bacc5] focus:outline-none"
+      }`}
               placeholder={`Masukkan ${field.replace("_", " ")}`}
+              readOnly={field === "kode_obat" || field === "id_user"}
             />
           )}
         </div>

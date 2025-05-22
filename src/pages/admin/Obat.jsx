@@ -30,6 +30,7 @@ const Obat = () => {
   // panggil fetchObat di useEffect
   useEffect(() => {
     fetchObat();
+    setSelectedObat(null);
   }, []);
 
   const handleEdit = (obat) => setSelectedObat(obat);
@@ -68,9 +69,9 @@ const Obat = () => {
   const dataTampil = lihatSemua ? sortedData : sortedData.slice(0, 12);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col -ml-1">
       <div className="p-4">
-        <div>
+        <div className="ml-4">
           <h1 className="text-2xl font-bold">Obat</h1>
           <p className="text-slate-600">
             ID Obat, Nama Obat, Stok, Harga Satuan, Deskripsi
@@ -152,7 +153,7 @@ const Obat = () => {
         </div>
 
         {/* Tabel Obat */}
-        <div className="w-full overflow-x-auto px-4 xs:pr-8 sm:pr-4 md:pr-4 lg:pr-4 xl:pr-4">
+        <div className="w-full overflow-x-auto pr-1 xs:pr-8 sm:pr-4 md:pr-4 lg:pr-4 xl:pr-4">
           <table className="min-w-full border-2 border-slate-400 text-[10px] sm:text-[11px] md:text-sm lg:text-base">
             <thead className="bg-[#557187] text-white text-[8px] sm:text-[9px] md:text-xs lg:text-sm">
               <tr>
@@ -190,23 +191,23 @@ const Obat = () => {
                     key={obat.id}
                     className={idx % 2 === 1 ? "bg-[#E3EBF3]" : ""}
                   >
-                    <td className="border-2 border-slate-400 text-center">
+                    <td className="border-2 border-slate-400 text-center px-1">
                       {idx + 1}
                     </td>
-                    <td className="border-2 border-slate-400 text-center">
+                    <td className="border-2 border-slate-400 text-center px-1">
                       {obat.kode_obat}
                     </td>
 
-                    <td className="border-2 border-slate-400 px-2">
+                    <td className="border-2 border-slate-400 px-1 md:px-2">
                       {obat.nama_obat}
                     </td>
                     <td className="border-2 border-slate-400 text-center">
                       {obat.stok}
                     </td>
-                    <td className="border-2 border-slate-400 text-center">
+                    <td className="border-2 border-slate-400 text-center px-1">
                       {obat.harga_satuan}
                     </td>
-                    <td className="border-2 border-slate-400 px-2">
+                    <td className="border-2 border-slate-400 px-1 md:px2">
                       {obat.deskripsi}
                     </td>
                     <td className="border-2 border-slate-400 text-center">
@@ -260,7 +261,14 @@ const Obat = () => {
 
       {/* Form Edit Obat */}
       {selectedObat && (
-        <EditObatForm obat={selectedObat} onClose={handleCloseEdit} />
+        <EditObatForm
+          onClose={handleCloseEdit}
+          dataObat={selectedObat}
+          onSuccess={() => {
+            fetchObat();
+            setSelectedObat(null);
+          }}
+        />
       )}
 
       <Footer />
