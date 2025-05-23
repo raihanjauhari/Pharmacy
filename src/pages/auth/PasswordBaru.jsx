@@ -6,12 +6,13 @@ import { Eye, EyeOff } from "lucide-react";
 import SuccessIcon from "../../assets/accepted.png"; // Centang hijau
 import { useNavigate } from "react-router-dom";
 import "../../components/PasswordBaru.css";
+import axios from "axios";
 
 const PasswordBaru = () => {
   const [formData, setFormData] = useState({
     password: "",
     confirmPassword: "",
-  });
+  }); // atau ambil dari state
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -44,8 +45,9 @@ const PasswordBaru = () => {
     return "";
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     const passwordValidation = validatePassword(formData.password);
     if (passwordValidation) {
       setPasswordError(passwordValidation);
@@ -57,15 +59,48 @@ const PasswordBaru = () => {
       return;
     }
 
-    // Menampilkan modal sukses setelah validasi berhasil
-    setShowSuccessModal(true);
-    setPasswordError("");
-    setConfirmPasswordError("");
+    const email = localStorage.getItem("reset_email");
+    if (!email) {
+      alert(
+        "Email reset tidak ditemukan. Silakan ulangi proses reset password."
+      );
+      return;
+    }
+
+    try {
+      const response = await axios.get("http://127.0.0.1:3000/api/user");
+      const users = response.data;
+
+      const user = users.find(
+        (u) =>
+          u.email && u.email.trim().toLowerCase() === email.trim().toLowerCase()
+      );
+
+      if (!user) {
+        alert("Pengguna tidak ditemukan.");
+        return;
+      }
+
+      await axios.put(
+        `http://127.0.0.1:3000/api/user/${user.id_user}/password`,
+        {
+          password: formData.password,
+        }
+      );
+
+      setShowSuccessModal(true);
+      setPasswordError("");
+      setConfirmPasswordError("");
+    } catch (error) {
+      console.error("Gagal memperbarui password:", error);
+      alert("Terjadi kesalahan saat mengubah password.");
+    }
   };
 
   const handleClick = () => {
-    setShowSuccessModal(false); // Sembunyikan modal
-    navigate("/"); // Arahkan ke halaman login
+    setShowSuccessModal(false);
+    localStorage.removeItem("reset_email"); // Bersihkan
+    navigate("/"); // Kembali ke halaman login
   };
 
   useEffect(() => {

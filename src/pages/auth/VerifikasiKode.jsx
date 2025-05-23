@@ -62,7 +62,6 @@ const VerifikasiKode = () => {
 
       if (response.ok) {
         setErrorMessage("");
-        localStorage.removeItem("reset_email");
         navigate("/buat-password-baru");
       } else {
         setErrorMessage(data.error || "Kode verifikasi salah.");

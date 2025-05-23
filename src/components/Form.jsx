@@ -71,32 +71,37 @@ const Form = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.get("http://127.0.0.1:3000/api/user");
-      const users = response.data;
-
-      const userByEmail = users.find((user) => user.email === formData.email);
-
-      if (!userByEmail) {
-        setLoginSuccess(false);
-        setErrorMessage("Email tidak ditemukan.");
-      } else if (userByEmail.password !== formData.password) {
-        setLoginSuccess(false);
-        setErrorMessage("Password salah.");
-      } else {
-        setUserRole(userByEmail.role);
-        setLoginSuccess(true);
-        localStorage.setItem("role", userByEmail.role);
-        localStorage.setItem("user", JSON.stringify(userByEmail));
-
-        if (userByEmail.role === "admin") {
-          navigate("/dashboard-admin");
-        } else if (userByEmail.role === "petugas") {
-          navigate("/dashboard-petugas");
+      const response = await axios.post(
+        "http://127.0.0.1:3000/api/user/login",
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
+      );
+
+      const user = response.data;
+
+      // Backend sudah validasi password, jadi jika response sukses berarti login berhasil
+      setUserRole(user.role);
+      setLoginSuccess(true);
+      localStorage.setItem("role", user.role);
+      localStorage.setItem("user", JSON.stringify(user));
+
+      if (user.role === "admin") {
+        navigate("/dashboard-admin");
+      } else if (user.role === "petugas") {
+        navigate("/dashboard-petugas");
       }
     } catch (error) {
-      console.error("Gagal login:", error);
-      setErrorMessage("Terjadi kesalahan saat menghubungi server.");
+      if (error.response) {
+        // error dari backend
+        setErrorMessage(error.response.data.error || "Login gagal.");
+      } else {
+        setErrorMessage("Terjadi kesalahan saat menghubungi server.");
+      }
+      setLoginSuccess(false);
     }
   };
 
