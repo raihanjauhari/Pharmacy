@@ -101,10 +101,11 @@ const VerifikasiKode = () => {
           className="flex flex-col items-center justify-center gap-6 py-10"
         >
           {/* Logo */}
-          <div className="flex items-end gap-[0px] mb-7">
-            <img src={Logo} alt="logo" className="-ml-5" />
+          <div className="flex justify-center items-end gap-[5px] mb-7">
+            <img src={Logo} alt="logo" className="" />
             <h2 className="font-bold text-3xl text-[#1D242E]">Pharmacy</h2>
           </div>
+
           {/* Header Form */}
           <h2 className="text-3xl font-bold text-[#2A4D69] text-center">
             Periksa Email Kamu

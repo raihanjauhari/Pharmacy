@@ -93,7 +93,7 @@ const LupaPassword = () => {
         setErrorMessage("");
         navigate("/verifikasi-kode");
       } else {
-        setErrorMessage(data.message || "Gagal mengirim email verifikasi.");
+        setErrorMessage(data.message || "Email tidak ditemukan");
         setLoginSuccess(false);
       }
     } catch (error) {
@@ -148,8 +148,8 @@ const LupaPassword = () => {
           )}
 
           {/* Logo */}
-          <div className="flex items-end gap-[0px] mb-7">
-            <img src={Logo} alt="logo" className="ml-16" />
+          <div className="flex justify-center items-end gap-[5px] mb-7">
+            <img src={Logo} alt="logo" className="" />
             <h2 className="font-bold text-3xl text-[#1D242E]">Pharmacy</h2>
           </div>
 

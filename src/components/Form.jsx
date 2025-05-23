@@ -86,6 +86,7 @@ const Form = () => {
       // Backend sudah validasi password, jadi jika response sukses berarti login berhasil
       setUserRole(user.role);
       setLoginSuccess(true);
+      localStorage.setItem("email", user.email);
       localStorage.setItem("role", user.role);
       localStorage.setItem("user", JSON.stringify(user));
 
@@ -151,14 +152,15 @@ const Form = () => {
             </p>
           )}
 
-          {/* Logo */}
-          <div className="flex items-end gap-[0px] mb-7">
-            <img src={Logo} alt="logo" className="ml-16" />
+          <div className="flex justify-center items-end gap-[5px] mb-7">
+            <img src={Logo} alt="logo" className="" />
             <h2 className="font-bold text-3xl text-[#1D242E]">Pharmacy</h2>
           </div>
 
           {/* Header Form - Judul dan deskripsi form */}
-          <h2 className="text-4xl font-bold text-[#2A4D69] ml-30">LOGIN</h2>
+          <h2 className="text-4xl font-bold text-[#2A4D69] text-center mb-7">
+            LOGIN
+          </h2>
           <p className="text-[#000000] pb-4 pt-1 -mt-3 text-center">
             Masuk untuk mengelola sistem dan operasional apotek.
           </p>

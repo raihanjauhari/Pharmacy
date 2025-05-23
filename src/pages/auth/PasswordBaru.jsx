@@ -127,8 +127,8 @@ const PasswordBaru = () => {
           onSubmit={handleSubmit}
           className="max-w-[460px] w-full mx-auto grid gap-4 place-content-center p-6 md:p-12"
         >
-          <div className="flex items-end gap-[0px] mb-7">
-            <img src={Logo} alt="logo" className="ml-16" />
+          <div className="flex justify-center items-end gap-[5px] mb-7">
+            <img src={Logo} alt="logo" className="" />
             <h2 className="font-bold text-3xl text-[#1D242E]">Pharmacy</h2>
           </div>
 

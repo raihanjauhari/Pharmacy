@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { LucideBell, LucideSearch, LucideX } from "lucide-react";
-import Jumbo from "../../assets/jumbo.jpeg";
 import NotificationDropdown from "./NotificationDropdown";
 import ProfileDropdown from "./ProfileDropDown";
 
@@ -14,6 +13,30 @@ const Header = () => {
   const [showNotif, setShowNotif] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [notifCount, setNotifCount] = useState(4); // jumlah badge notifikasi
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const emailLogin = localStorage.getItem("email");
+        if (!emailLogin) {
+          console.warn("Email login tidak ditemukan di localStorage");
+          return;
+        }
+        const response = await fetch("http://127.0.0.1:3000/api/user");
+        const data = await response.json();
+        if (data && data.length > 0) {
+          // Cari user yang emailnya cocok
+          const currentUser = data.find((u) => u.email === emailLogin);
+          setUser(currentUser || null);
+        }
+      } catch (error) {
+        console.error("Gagal mengambil data user:", error);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -120,7 +143,7 @@ const Header = () => {
                 Selamat Datang
               </h2>
               <p className="text-xs sm:text-sm md:text-base lg:text-lg font-semibold">
-                DON Jumbo
+                {user?.nama_user || "Loading..."}
               </p>
             </div>
             <div className="flex items-center space-x-3">
@@ -146,8 +169,10 @@ const Header = () => {
               <div className="relative" ref={profileRef}>
                 <button onClick={() => setShowProfileMenu((prev) => !prev)}>
                   <img
-                    src={Jumbo}
-                    alt="DON Jumbo"
+                    src={`http://127.0.0.1:3000/images/user/${
+                      user?.foto_user || "default.jpg"
+                    }`}
+                    alt={user?.nama_user || "User"}
                     className="w-12 h-12 rounded-full border-4 border-indigo-400 contrast-150 hover:contrast-70"
                   />
                 </button>
