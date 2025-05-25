@@ -1,126 +1,147 @@
 import React, { useEffect, useRef, useState } from "react";
-import { AlertCircle, X } from "lucide-react"; // import ikon X untuk tombol hapus
-import Atta from "../../assets/doctor/Atta.jpeg";
-import Mae from "../../assets/doctor/Mae.jpeg";
-import Meri from "../../assets/doctor/Meri.jpeg";
-import Nurman from "../../assets/doctor/Nurman.jpeg";
-
-const doctorImages = {
-  "dr. Atta": Atta,
-  "dr. Mae": Mae,
-  "dr. Meri": Meri,
-  "dr. Nurman": Nurman,
-  "dr. Lestari Wardhani": Mae,
-  "dr. Dewa Mahendra": Meri,
-  "dr. Ari Wibowo": Atta,
-  "dr. Nina Kartika": Nurman,
-  "dr. Bambang Sutrisno": Atta,
-  "dr. Sari Fitriani": Mae,
-  "dr. Rani Maulida": Meri,
-};
-
-const eresepData = [
-  // data awal tetap
-  {
-    id: "PD001",
-    status: "Diproses",
-    resep: {
-      namaPasien: "Anisa Aulya",
-      namaDokter: "dr. Lestari Wardhani",
-    },
-  },
-  {
-    id: "PD002",
-    status: "Menunggu Pembayaran",
-    resep: {
-      namaPasien: "Setya Adjie",
-      namaDokter: "dr. Dewa Mahendra",
-    },
-  },
-  {
-    id: "PD003",
-    status: "Sudah Bayar",
-    resep: {
-      namaPasien: "Putri Rahma",
-      namaDokter: "dr. Ari Wibowo",
-    },
-  },
-  {
-    id: "PD004",
-    status: "Selesai",
-    resep: {
-      namaPasien: "Bagas Pratama",
-      namaDokter: "dr. Nina Kartika",
-    },
-  },
-  {
-    id: "PD005",
-    status: "Sudah Bayar",
-    resep: {
-      namaPasien: "Neneknya DON",
-      namaDokter: "dr. Meri",
-    },
-  },
-  {
-    id: "PD006",
-    status: "Diproses",
-    resep: {
-      namaPasien: "Wahyu Kurniawan",
-      namaDokter: "dr. Bambang Sutrisno",
-    },
-  },
-  {
-    id: "PD007",
-    status: "Menunggu Pembayaran",
-    resep: {
-      namaPasien: "Lia Apriyani",
-      namaDokter: "dr. Sari Fitriani",
-    },
-  },
-  {
-    id: "PD008",
-    status: "Sudah Bayar",
-    resep: {
-      namaPasien: "Deni Yulianto",
-      namaDokter: "dr. Rani Maulida",
-    },
-  },
-];
+import { AlertCircle, X } from "lucide-react";
 
 const NotificationDropdown = ({ onClose }) => {
   const dropdownRef = useRef(null);
   const [showAll, setShowAll] = useState(false);
-
-  // State notifications di sini supaya bisa dihapus
-  const [notifications, setNotifications] = useState(() => {
-    return eresepData.map((item, index) => ({
-      id: item.id,
-      text: (() => {
-        const { status, resep } = item;
-        switch (status) {
-          case "Menunggu Pembayaran":
-            return `e-Resep baru dari ${resep.namaDokter}`;
-          case "Sudah Bayar":
-            return `e-Resep pasien ${resep.namaPasien} telah dibayarkan`;
-          case "Diproses":
-            return `e-Resep pasien ${resep.namaPasien} telah diproses`;
-          case "Selesai":
-            return `e-Resep pasien ${resep.namaPasien} telah diambil`;
-          default:
-            return "Notifikasi e-Resep";
-        }
-      })(),
-      time: `${(index + 1) * 5} menit lalu`,
-      avatar: doctorImages[item.resep.namaDokter] || null,
-    }));
-  });
+  const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
-    function handleClickOutside(event) {
+    const fetchData = async () => {
+      try {
+        const [pasienRes, resepRes, dokterRes, detailRes] = await Promise.all([
+          fetch("http://127.0.0.1:3000/api/pasien"),
+          fetch("http://127.0.0.1:3000/api/eresep"),
+          fetch("http://127.0.0.1:3000/api/dokter"),
+          fetch("http://127.0.0.1:3000/api/detail_eresep"),
+        ]);
+
+        if (!pasienRes.ok || !resepRes.ok || !dokterRes.ok || !detailRes.ok) {
+          throw new Error("Gagal mengambil salah satu data API");
+        }
+
+        const [pasienData, resepData, dokterData, detailData] =
+          await Promise.all([
+            pasienRes.json(),
+            resepRes.json(),
+            dokterRes.json(),
+            detailRes.json(),
+          ]);
+
+        const formatted = resepData.map((resep, index) => {
+          const pasien = pasienData.find(
+            (p) => String(p.id_pendaftaran) === String(resep.id_pendaftaran)
+          );
+          const idDokter = pasien?.id_dokter || "D001";
+          const dokter = dokterData.find(
+            (d) => String(d.id_dokter) === String(idDokter)
+          );
+
+          const namaPasien =
+            pasien?.nama_pasien || "Nama pasien tidak tersedia";
+          const namaDokter =
+            dokter?.nama_dokter || "Nama dokter tidak diketahui";
+          const status = resep.status || "Tidak diketahui";
+
+          let avatar = null;
+          if (status === "Menunggu Pembayaran") {
+            avatar = dokter?.foto_dokter
+              ? `http://localhost:3000/images/dokter/${dokter.foto_dokter}`
+              : null;
+          } else {
+            avatar = pasien?.foto_pasien
+              ? `http://localhost:3000/images/pasien/${pasien.foto_pasien}`
+              : null;
+          }
+
+          // Cari tanggal detail dari detailData berdasarkan id_eresep
+          const detail = detailData.find(
+            (d) => String(d.id_eresep) === String(resep.id_eresep)
+          );
+
+          // Fungsi ubah tanggal "01 Mei 2025" ke objek Date
+          const parseTanggal = (tanggalStr) => {
+            // buat mapping bulan Indonesia ke nomor bulan 0-11
+            const bulanMap = {
+              Januari: 0,
+              Februari: 1,
+              Maret: 2,
+              April: 3,
+              Mei: 4,
+              Juni: 5,
+              Juli: 6,
+              Agustus: 7,
+              September: 8,
+              Oktober: 9,
+              November: 10,
+              Desember: 11,
+            };
+            const parts = tanggalStr.split(" ");
+            if (parts.length !== 3) return null;
+            const day = parseInt(parts[0]);
+            const month = bulanMap[parts[1]];
+            const year = parseInt(parts[2]);
+            if (isNaN(day) || month === undefined || isNaN(year)) return null;
+            return new Date(year, month, day);
+          };
+
+          let time = "Waktu tidak diketahui";
+          if (detail && detail.tanggal_eresep) {
+            const tanggal = parseTanggal(detail.tanggal_eresep);
+            if (tanggal) {
+              const now = new Date();
+              const diffMs = now - tanggal; // selisih waktu milidetik
+              const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+              if (diffDays === 0) {
+                time = "Hari ini";
+              } else if (diffDays === 1) {
+                time = "1 hari lalu";
+              } else if (diffDays > 1) {
+                time = `${diffDays} hari lalu`;
+              } else {
+                time = "Tanggal di masa depan";
+              }
+            }
+          }
+
+          const text = (() => {
+            switch (status) {
+              case "Menunggu Pembayaran":
+                return `e-Resep baru dari ${namaDokter}`;
+              case "Sudah Bayar":
+                return `e-Resep pasien ${namaPasien} telah dibayarkan`;
+              case "Diproses":
+                return `e-Resep pasien ${namaPasien} telah diproses`;
+              case "Selesai":
+                return `e-Resep pasien ${namaPasien} telah diambil`;
+              default:
+                return "Notifikasi e-Resep";
+            }
+          })();
+
+          return {
+            id: resep.id_eresep || `R${index}`,
+            text,
+            time,
+            avatar,
+          };
+        });
+
+        setNotifications(formatted);
+      } catch (err) {
+        console.error("Gagal mengambil data:", err);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         onClose();
       }
-    }
+    };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [onClose]);
@@ -176,8 +197,6 @@ const NotificationDropdown = ({ onClose }) => {
                     </p>
                   </div>
                 </button>
-
-                {/* Tombol hapus */}
                 <button
                   onClick={() => handleDeleteNotification(notif.id)}
                   className="p-2 hover:bg-red-100 rounded-md ml-2"
@@ -199,7 +218,7 @@ const NotificationDropdown = ({ onClose }) => {
         <div className="text-center py-2 border-t bg-white rounded-b-lg">
           <button
             onClick={() => setShowAll(true)}
-            className="xs:w-50 sm:w-85 md:w-100 lg:w-120 px-3 py-2 xs:px-4 xs:py-2.5 bg-[#557187] text-white rounded-md text-xs xs:text-sm hover:bg-[#2A4D69] transition-colors"
+            className="px-3 py-2 xs:px-4 xs:py-2.5 bg-[#557187] text-white rounded-md text-xs xs:text-sm hover:bg-[#2A4D69] transition-colors"
           >
             Lihat Semua Notifikasi
           </button>

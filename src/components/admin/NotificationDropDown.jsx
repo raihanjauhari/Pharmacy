@@ -1,74 +1,74 @@
-import React, { useEffect, useRef, useState } from "react"
-import { AlertCircle, X } from "lucide-react" // tambah ikon X untuk hapus
+import React, { useEffect, useRef, useState } from "react";
+import { AlertCircle, X } from "lucide-react";
 
-const obatData = [
-  { id: "OB001", namaObat: "Paracetamol", stok: 10, stokMinimal: 15 },
-  { id: "OB002", namaObat: "Amoxicillin", stok: 2, stokMinimal: 5 },
-  { id: "OB003", namaObat: "Vitamin C", stok: 0, stokMinimal: 10 },
-  { id: "OB004", namaObat: "Antibiotik X", stok: 20, stokMinimal: 10 },
-  { id: "OB005", namaObat: "Ibuprofen", stok: 5, stokMinimal: 7 },
-  { id: "OB006", namaObat: "Antasida", stok: 1, stokMinimal: 3 },
-  { id: "OB007", namaObat: "Obat Flu", stok: 12, stokMinimal: 10 },
-  { id: "OB008", namaObat: "Salep Luka", stok: 0, stokMinimal: 5 },
-  { id: "OB009", namaObat: "Vitamin D", stok: 6, stokMinimal: 8 },
-  { id: "OB010", namaObat: "Suplemen Omega", stok: 15, stokMinimal: 10 },
-  { id: "OB011", namaObat: "Antibiotik Y", stok: 3, stokMinimal: 5 },
-  { id: "OB012", namaObat: "Obat Batuk", stok: 0, stokMinimal: 6 },
-  { id: "OB013", namaObat: "Obat Sakit Kepala", stok: 8, stokMinimal: 10 },
-  { id: "OB014", namaObat: "Obat Maag", stok: 9, stokMinimal: 12 },
-  { id: "OB015", namaObat: "Vitamin B12", stok: 2, stokMinimal: 4 },
-]
+const STOK_MINIMAL = 10;
 
 const generateObatNotification = (obat) => {
   if (obat.stok === 0) {
-    return `Obat ${obat.namaObat} telah habis! Segera lakukan pengisian stok.`
-  } else if (obat.stok <= obat.stokMinimal) {
-    return `Stok obat ${obat.namaObat} hampir habis (${obat.stok} tersisa).`
+    return `Obat ${obat.nama_obat} telah habis! Segera lakukan pengisian stok.`;
+  } else if (obat.stok <= STOK_MINIMAL) {
+    return `Stok obat ${obat.nama_obat} hampir habis (${obat.stok} tersisa).`;
   } else {
-    return null
+    return null;
   }
-}
+};
 
 const NotificationDropdown = ({ onClose }) => {
-  const dropdownRef = useRef(null)
-  const [showAll, setShowAll] = useState(false)
+  const dropdownRef = useRef(null);
+  const [showAll, setShowAll] = useState(false);
+  const [notifications, setNotifications] = useState([]);
 
-  // State notifikasi yang tampil dan bisa dihapus
-  const [notifications, setNotifications] = useState(() => {
-    return obatData
-      .map((obat, index) => {
-        const text = generateObatNotification(obat)
-        if (!text) return null
-        return {
-          id: obat.id,
-          text,
-          time: `${(index + 1) * 10} menit lalu`,
-        }
-      })
-      .filter(Boolean)
-  })
+  useEffect(() => {
+    // Ambil data obat dari API
+    const fetchObat = async () => {
+      try {
+        const res = await fetch("http://127.0.0.1:3000/api/obat");
+        if (!res.ok) throw new Error("Gagal mengambil data obat");
+        const data = await res.json();
+
+        // Filter dan buat notifikasi stok
+        const notifs = data
+          .map((obat, index) => {
+            const text = generateObatNotification(obat);
+            if (!text) return null;
+            return {
+              id: obat.kode_obat,
+              text,
+              time: `${(index + 1) * 10} menit lalu`, // Contoh waktu statis bisa disesuaikan
+            };
+          })
+          .filter(Boolean);
+
+        setNotifications(notifs);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchObat();
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        onClose()
+        onClose();
       }
     }
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
-  }, [onClose])
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [onClose]);
 
   const visibleNotifications = showAll
     ? notifications
-    : notifications.slice(0, 4)
+    : notifications.slice(0, 4);
 
   const handleNotificationClick = (notifId) => {
-    alert(`Notifikasi obat dengan id ${notifId} telah diklik!`)
-  }
+    alert(`Notifikasi obat dengan id ${notifId} telah diklik!`);
+  };
 
   const handleDeleteNotification = (notifId) => {
-    setNotifications((prev) => prev.filter((notif) => notif.id !== notifId))
-  }
+    setNotifications((prev) => prev.filter((notif) => notif.id !== notifId));
+  };
 
   return (
     <div
@@ -89,13 +89,26 @@ const NotificationDropdown = ({ onClose }) => {
           {visibleNotifications.length > 0 ? (
             visibleNotifications.map((notif) => (
               <li key={notif.id}>
-                <div className="flex items-center justify-between p-1 hover:bg-gray-50">
+                <div
+                  className="flex items-center justify-between p-2 hover:bg-gray-50"
+                  style={{ minHeight: "3rem" }} // Atau pakai height jika ingin fixed persis, misal 48px (3rem)
+                >
                   <button
                     onClick={() => handleNotificationClick(notif.id)}
                     className="flex items-center gap-3 text-left flex-1 focus:outline-none"
+                    style={{ alignItems: "center" }} // pastikan ikon dan teks sejajar tengah vertikal
                   >
-                    <AlertCircle className="text-red-500 w-6 h-6" />
-                    <div className="text-xs text-gray-900">{notif.text}</div>
+                    <AlertCircle className="text-red-500 w-6 h-6 flex-shrink-0" />
+                    <div
+                      className="text-xs text-gray-900"
+                      style={{
+                        lineHeight: "1.2rem",
+                        maxHeight: "2.4rem",
+                        overflow: "hidden",
+                      }} // agar teks tidak terlalu tinggi
+                    >
+                      {notif.text}
+                    </div>
                   </button>
                   <button
                     onClick={() => handleDeleteNotification(notif.id)}
@@ -126,7 +139,7 @@ const NotificationDropdown = ({ onClose }) => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default NotificationDropdown
+export default NotificationDropdown;
