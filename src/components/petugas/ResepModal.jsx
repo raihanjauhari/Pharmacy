@@ -8,7 +8,7 @@ const formatRupiah = (angka) => {
   }).format(angka);
 };
 
-const ResepModal = ({ resep, onClose }) => {
+const ResepModal = ({ data = {}, onClose }) => {
   const modalRef = useRef();
   const [showContent, setShowContent] = useState(false);
 
@@ -33,10 +33,27 @@ const ResepModal = ({ resep, onClose }) => {
     }
   };
 
-  const jumlah = parseInt(resep.jumlahObat || "0");
-  const hargaSatuan =
-    Number(resep.hargaObat.replace(/\./g, "").replace(",", "")) || 0;
-  const totalHarga = jumlah * hargaSatuan;
+  const {
+    namaPasien = "-",
+    id = "-",
+    umur = "-",
+    beratBadan = "-",
+    poli = "-",
+    tanggalResep = "-",
+    namaDokter = "-",
+    diagnosa = "-",
+    daftarObat = [],
+    keterangan = "-",
+  } = data;
+
+  // Hitung total harga dari daftarObat
+  const totalHarga = daftarObat.reduce((total, obat) => {
+    const jumlah = parseInt(obat.kuantitas) || 0;
+    const hargaSatuan =
+      Number(String(obat.hargaSatuan).replace(/\./g, "").replace(",", ".")) ||
+      0;
+    return total + jumlah * hargaSatuan;
+  }, 0);
 
   return (
     <div
@@ -55,35 +72,33 @@ const ResepModal = ({ resep, onClose }) => {
         {/* Informasi Pasien */}
         <div className="grid grid-cols-2 gap-4 text-gray-700 text-sm">
           <div>
-            <span className="font-semibold">Nama Pasien:</span>{" "}
-            {resep.namaPasien}
+            <span className="font-semibold">Nama Pasien:</span> {namaPasien}
           </div>
           <div>
-            <span className="font-semibold">ID Resep:</span> {resep.idResep}
+            <span className="font-semibold">ID Resep:</span> {id}
           </div>
           <div>
-            <span className="font-semibold">Umur:</span> {resep.umur}
+            <span className="font-semibold">Umur:</span> {umur}
           </div>
           <div>
-            <span className="font-semibold">Berat Badan:</span>{" "}
-            {resep.beratBadan}
+            <span className="font-semibold">Berat Badan:</span> {beratBadan}
           </div>
           <div>
-            <span className="font-semibold">Poli:</span> {resep.poli}
+            <span className="font-semibold">Poli:</span> {poli}
           </div>
           <div>
             <span className="font-semibold">Tanggal e-Resep:</span>{" "}
-            {resep.tanggalResep}
+            {tanggalResep}
           </div>
           <div>
-            <span className="font-semibold">Dokter:</span> {resep.namaDokter}
+            <span className="font-semibold">Dokter:</span> {namaDokter}
           </div>
         </div>
 
         {/* Diagnosa */}
         <div className="bg-gray-200 rounded-lg p-4">
           <p className="text-sm font-semibold text-gray-600">Diagnosa:</p>
-          <p className="text-base text-gray-800">{resep.Diagnosa}</p>
+          <p className="text-base text-gray-800">{diagnosa}</p>
         </div>
 
         {/* Tabel Obat */}
@@ -104,22 +119,42 @@ const ResepModal = ({ resep, onClose }) => {
               </tr>
             </thead>
             <tbody>
-              <tr className="border-t border-gray-200">
-                <td className="p-3 border-r border-gray-200">
-                  {resep.namaObat}
-                </td>
-                <td className="p-3 border-r border-gray-200">
-                  {resep.aturanPakai}
-                </td>
-                <td className="p-3 border-r border-gray-200">{jumlah}</td>
-                <td className="p-3">{formatRupiah(hargaSatuan)}</td>
-              </tr>
+              {daftarObat.length > 0 ? (
+                daftarObat.map((obat, index) => (
+                  <tr key={index} className="border-t border-gray-200">
+                    <td className="p-3 border-r border-gray-200">
+                      {obat.namaObat || "-"}
+                    </td>
+                    <td className="p-3 border-r border-gray-200">
+                      {obat.aturanPakai || "-"}
+                    </td>
+                    <td className="p-3 border-r border-gray-200">
+                      {obat.kuantitas || 0}
+                    </td>
+                    <td className="p-3">
+                      {formatRupiah(
+                        Number(
+                          String(obat.hargaSatuan)
+                            .replace(/\./g, "")
+                            .replace(",", ".")
+                        ) || 0
+                      )}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr className="border-t border-gray-200">
+                  <td colSpan={4} className="p-3 text-center text-gray-500">
+                    Tidak ada data obat
+                  </td>
+                </tr>
+              )}
               <tr className="border-t border-gray-200">
                 <td
                   colSpan={4}
                   className="p-3 text-sm text-gray-600 bg-gray-50"
                 >
-                  <strong>Catatan:</strong> {resep.keterangan || "-"}
+                  <strong>Catatan:</strong> {keterangan}
                 </td>
               </tr>
             </tbody>

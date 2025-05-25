@@ -9,7 +9,6 @@ import {
   Quote,
   ArrowRightCircle,
 } from "lucide-react";
-import PetunjukEResep from "../../assets/PDF/petunjuk.pdf";
 import EResepModal from "../../components/petugas/ResepModal";
 import ScrollToTopButton from "../../components/petugas/ScrollToTopButton";
 
@@ -20,6 +19,8 @@ const EResep = () => {
   const [selectedResep, setSelectedResep] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const statusPriority = {
     "Sudah Bayar": 1,
@@ -29,28 +30,63 @@ const EResep = () => {
   };
 
   useEffect(() => {
+    let isCancelled = false;
+
+    setLoading(true);
+    setError(null);
+    setData([]);
+
     const fetchData = async () => {
       try {
-        const [pasienRes, resepRes, dokterRes, dilayaniRes] = await Promise.all(
-          [
-            fetch("http://127.0.0.1:3000/api/pasien"),
-            fetch("http://127.0.0.1:3000/api/eresep"),
-            fetch("http://127.0.0.1:3000/api/dokter"),
-            fetch("http://127.0.0.1:3000/api/dilayani"),
-          ]
-        );
+        const [
+          pasienRes,
+          resepRes,
+          dokterRes,
+          dilayaniRes,
+          memunculkanRes,
+          obatRes,
+          detailEresepRes,
+        ] = await Promise.all([
+          fetch("http://127.0.0.1:3000/api/pasien"),
+          fetch("http://127.0.0.1:3000/api/eresep"),
+          fetch("http://127.0.0.1:3000/api/dokter"),
+          fetch("http://127.0.0.1:3000/api/dilayani"),
+          fetch("http://127.0.0.1:3000/api/memunculkan"),
+          fetch("http://127.0.0.1:3000/api/obat"),
+          fetch("http://127.0.0.1:3000/api/detail_eresep"),
+        ]);
 
-        if (!pasienRes.ok || !resepRes.ok || !dokterRes.ok || !dilayaniRes.ok) {
+        if (
+          !pasienRes.ok ||
+          !resepRes.ok ||
+          !dokterRes.ok ||
+          !dilayaniRes.ok ||
+          !memunculkanRes.ok ||
+          !obatRes.ok ||
+          !detailEresepRes.ok
+        ) {
           throw new Error("Gagal mengambil data dari server");
         }
 
-        const [pasienData, resepData, dokterData, dilayaniData] =
-          await Promise.all([
-            pasienRes.json(),
-            resepRes.json(),
-            dokterRes.json(),
-            dilayaniRes.json(),
-          ]);
+        const [
+          pasienData,
+          resepData,
+          dokterData,
+          dilayaniData,
+          memunculkanData,
+          obatData,
+          detailEresepData,
+        ] = await Promise.all([
+          pasienRes.json(),
+          resepRes.json(),
+          dokterRes.json(),
+          dilayaniRes.json(),
+          memunculkanRes.json(),
+          obatRes.json(),
+          detailEresepRes.json(),
+        ]);
+
+        if (isCancelled) return;
 
         const pasienArray = Array.isArray(pasienData)
           ? pasienData
@@ -62,6 +98,13 @@ const EResep = () => {
         const dilayaniArray = Array.isArray(dilayaniData)
           ? dilayaniData
           : [dilayaniData];
+        const memunculkanArray = Array.isArray(memunculkanData)
+          ? memunculkanData
+          : [memunculkanData];
+        const obatArray = Array.isArray(obatData) ? obatData : [obatData];
+        const detailEresepArray = Array.isArray(detailEresepData)
+          ? detailEresepData
+          : [detailEresepData];
 
         const combinedData = resepArray.map((resep) => {
           const pasien = pasienArray.find(
@@ -70,36 +113,54 @@ const EResep = () => {
           const dilayani = dilayaniArray.find(
             (d) => d.id_pendaftaran === resep.id_pendaftaran
           );
-          const idDokter = dilayani?.id_dokter;
           const dokter = dokterArray.find(
-            (d) => String(d.id_dokter) === String(idDokter)
+            (d) => String(d.id_dokter) === String(dilayani?.id_dokter)
           );
+          const detailResep = detailEresepArray.find(
+            (d) => d.id_eresep === resep.id_eresep
+          );
+
+          const daftarObat = memunculkanArray
+            .filter((m) => m.id_eresep === resep.id_eresep)
+            .map((m) => {
+              const obat = obatArray.find((o) => o.kode_obat === m.kode_obat);
+              return {
+                namaObat: obat?.nama_obat || "-",
+                aturanPakai: m.aturan_pakai || "-",
+                kuantitas: m.kuantitas || 0,
+                hargaSatuan: obat?.harga_satuan || 0,
+              };
+            });
 
           return {
             id: resep.id_eresep || "Tidak ditemukan",
             status: resep.status || "Tidak diketahui",
-            resep: {
-              namaPasien: pasien?.nama_pasien || "Nama pasien tidak tersedia",
-              namaDokter: dokter?.nama_dokter || "Nama dokter tidak diketahui",
-              diagnosa: pasien?.diagnosa || "-",
-              aturan_pakai: resep.aturan_pakai || "-",
-              catatan: resep.catatan || "-",
-              umur: pasien?.umur || "-",
-              berat: pasien?.berat_badan || "-",
-              foto: pasien?.foto_pasien || null,
-              tanggal: resep.tanggal_eresep || "-",
-              kuantitas: resep.kuantitas || "-",
-            },
+            namaPasien: pasien?.nama_pasien || "Nama pasien tidak tersedia",
+            namaDokter: dokter?.nama_dokter || "Nama dokter tidak diketahui",
+            poli: dokter?.poli || "-",
+            umur: pasien?.umur || "-",
+            beratBadan: pasien?.berat_badan || "-",
+            tanggalResep: detailResep?.tanggal_eresep || "-",
+            diagnosa: pasien?.diagnosa || "-",
+            keterangan: detailResep?.catatan || "-",
+            daftarObat,
           };
         });
 
         setData(combinedData);
+        setLoading(false);
       } catch (error) {
-        console.error("Gagal mengambil data:", error);
+        if (isCancelled) return;
+        setError(error.message || "Terjadi kesalahan");
+        setLoading(false);
       }
     };
 
     fetchData();
+
+    return () => {
+      isCancelled = true;
+    };
   }, []);
 
   const filteredAndSortedData = data
@@ -108,8 +169,8 @@ const EResep = () => {
       const lowerSearch = searchText.toLowerCase();
       return (
         item.id.toString().toLowerCase().includes(lowerSearch) ||
-        item.resep.namaPasien.toLowerCase().includes(lowerSearch) ||
-        item.resep.namaDokter.toLowerCase().includes(lowerSearch)
+        item.namaPasien.toLowerCase().includes(lowerSearch) ||
+        item.namaDokter.toLowerCase().includes(lowerSearch)
       );
     })
     .sort((a, b) => {
@@ -117,10 +178,8 @@ const EResep = () => {
       const bPriority = statusPriority[b.status] || 999;
       if (aPriority !== bPriority) return aPriority - bPriority;
 
-      if (sortBy === "nama")
-        return a.resep.namaPasien.localeCompare(b.resep.namaPasien);
-      if (sortBy === "dokter")
-        return a.resep.namaDokter.localeCompare(b.resep.namaDokter);
+      if (sortBy === "nama") return a.namaPasien.localeCompare(b.namaPasien);
+      if (sortBy === "dokter") return a.namaDokter.localeCompare(b.namaDokter);
       if (sortBy === "id")
         return a.id.toString().localeCompare(b.id.toString());
       return 0;
@@ -206,6 +265,9 @@ const EResep = () => {
           </button>
         </div>
 
+        {loading && <p>Loading data...</p>}
+        {error && <p className="text-red-600">{error}</p>}
+
         <div className="w-full overflow-x-auto px-1 xs:px-6 sm:px-6 md:px-6 lg:px-6 xl:px-6">
           <table className="min-w-full border-2 border-slate-400 text-[10px] sm:text-[11px] md:text-sm lg:text-base">
             <thead className="bg-[#557187] text-white text-[8px] sm:text-[9px] md:text-xs lg:text-sm">
@@ -251,10 +313,10 @@ const EResep = () => {
                       {item.id}
                     </td>
                     <td className="border-2 border-slate-400 px-2 py-[2px] sm:px-3 sm:py-2 md:px-4 md:py-2">
-                      {item.resep.namaPasien}
+                      {item.namaPasien}
                     </td>
                     <td className="border-2 border-slate-400 px-2 py-[2px] sm:px-3 sm:py-2 md:px-4 md:py-2">
-                      {item.resep.namaDokter}
+                      {item.namaDokter}
                     </td>
                     <td className="border-2 border-slate-400 text-center px-1 sm:px-2 md:px-3 lg:px-4 py-1">
                       {item.status}
@@ -263,7 +325,7 @@ const EResep = () => {
                     <td className="border-2 border-slate-400 text-center px-2 py-1 sm:px-3 sm:py-2 md:px-4 md:py-2">
                       <div className="flex justify-center">
                         <button
-                          onClick={() => openModal(item.resep)}
+                          onClick={() => openModal(item)}
                           className="
                           bg-[#557187] text-white 
                           text-[7px] xs:text-[8px] sm:text-[9px] md:text-[10px] lg:text-sm
@@ -296,7 +358,11 @@ const EResep = () => {
       </div>
 
       {showModal && selectedResep && (
-        <EResepModal resep={selectedResep} onClose={closeModal} />
+        <EResepModal
+          showModal={showModal}
+          onClose={closeModal}
+          data={selectedResep}
+        />
       )}
 
       {/* Scroll to Top Bottom */}

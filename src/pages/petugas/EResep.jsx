@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Footer from "../../components/Footer";
 import {
   LucideSearch,
@@ -10,378 +10,19 @@ import {
   ArrowRightCircle,
 } from "lucide-react";
 import PetunjukEResep from "../../assets/PDF/petunjuk.pdf";
-import EResepModal from "../../components/petugas/ResepModal";
+import ResepModal from "../../components/petugas/ResepModal";
 import ScrollToTopButton from "../../components/petugas/ScrollToTopButton";
 
 const EResep = () => {
-  const [data, setData] = useState([
-    {
-      id: "PD001",
-      status: "Diproses",
-      resep: {
-        namaPasien: "Anisa Aulya",
-        umur: "28 tahun",
-        poli: "Poli Umum",
-        beratBadan: "55 kg",
-        Diagnosa: "Demam dan sakit kepala",
-        hargaObat: "15.000",
-        namaDokter: "dr. Lestari Wardhani",
-        idResep: "RSP001",
-        namaObat: "Paracetamol",
-        jumlahObat: "10",
-        aturanPakai: "3x1 sehari",
-        keterangan: "Setelah makan",
-        tanggalResep: "2025-05-17",
-      },
-    },
-    {
-      id: "PD002",
-      status: "Menunggu Pembayaran",
-      resep: {
-        namaPasien: "Setya Adjie",
-        umur: "35 tahun",
-        poli: "Poli Umum",
-        beratBadan: "65 kg",
-        Diagnosa: "Infeksi saluran pernapasan atas",
-        hargaObat: "25.000",
-        namaDokter: "dr. Dewa Mahendra",
-        idResep: "RSP002",
-        namaObat: "Amoxicillin",
-        jumlahObat: "20",
-        aturanPakai: "3x1 sehari",
-        keterangan: "Sebelum makan",
-        tanggalResep: "2025-05-16",
-      },
-    },
-    {
-      id: "PD003",
-      status: "Sudah Bayar",
-      resep: {
-        namaPasien: "Putri Rahma",
-        umur: "40 tahun",
-        poli: "Poli Saraf",
-        beratBadan: "60 kg",
-        Diagnosa: "Nyeri otot",
-        hargaObat: "18.000",
-        namaDokter: "dr. Ari Wibowo",
-        idResep: "RSP004",
-        namaObat: "Ibuprofen",
-        jumlahObat: "15",
-        aturanPakai: "2x1 sehari",
-        keterangan: "Sesudah makan",
-        tanggalResep: "2025-05-16",
-      },
-    },
-    {
-      id: "PD005",
-      status: "Sudah Bayar",
-      resep: {
-        namaPasien: "Neneknya DON",
-        umur: "65 tahun",
-        poli: "Poli Kulit",
-        beratBadan: "50 kg",
-        Diagnosa: "Alergi kulit",
-        hargaObat: "12.000",
-        namaDokter: "dr. Meri",
-        idResep: "RSP003",
-        namaObat: "Cetirizine",
-        jumlahObat: "5",
-        aturanPakai: "1x1 malam",
-        keterangan: "Jika gatal muncul",
-        tanggalResep: "2025-05-15",
-      },
-    },
-    {
-      id: "PD006",
-      status: "Diproses",
-      resep: {
-        namaPasien: "Wahyu Kurniawan",
-        umur: "38 tahun",
-        poli: "Poli Penyakit Dalam",
-        beratBadan: "75 kg",
-        Diagnosa: "Asam lambung",
-        hargaObat: "14.000",
-        namaDokter: "dr. Bambang Sutrisno",
-        idResep: "RSP006",
-        namaObat: "Antasida",
-        jumlahObat: "12",
-        aturanPakai: "2x1 sebelum makan",
-        keterangan: "Untuk asam lambung",
-        tanggalResep: "2025-05-14",
-      },
-    },
-    {
-      id: "PD007",
-      status: "Menunggu Pembayaran",
-      resep: {
-        namaPasien: "Lia Apriyani",
-        umur: "45 tahun",
-        poli: "Poli Dalam",
-        beratBadan: "68 kg",
-        Diagnosa: "Diabetes Tipe 2",
-        hargaObat: "30.000",
-        namaDokter: "dr. Sari Fitriani",
-        idResep: "RSP007",
-        namaObat: "Metformin",
-        jumlahObat: "30",
-        aturanPakai: "2x1 sehari",
-        keterangan: "Kontrol gula darah",
-        tanggalResep: "2025-05-13",
-      },
-    },
-    {
-      id: "PD008",
-      status: "Sudah Bayar",
-      resep: {
-        namaPasien: "Deni Yulianto",
-        umur: "29 tahun",
-        poli: "Poli Paru",
-        beratBadan: "62 kg",
-        Diagnosa: "Asma ringan",
-        hargaObat: "20.000",
-        namaDokter: "dr. Rani Maulida",
-        idResep: "RSP008",
-        namaObat: "Salbutamol",
-        jumlahObat: "10",
-        aturanPakai: "2x1 saat sesak",
-        keterangan: "Untuk asma",
-        tanggalResep: "2025-05-12",
-      },
-    },
-    {
-      id: "PD009",
-      status: "Diproses",
-      resep: {
-        namaPasien: "Rina Lestari",
-        umur: "50 tahun",
-        poli: "Poli Jantung",
-        beratBadan: "58 kg",
-        Diagnosa: "Tekanan darah tinggi",
-        hargaObat: "22.000",
-        namaDokter: "dr. Indra Wijaya",
-        idResep: "RSP009",
-        namaObat: "Captopril",
-        jumlahObat: "14",
-        aturanPakai: "1x2 pagi dan malam",
-        keterangan: "Cek tekanan darah rutin",
-        tanggalResep: "2025-05-11",
-      },
-    },
-    {
-      id: "PD010",
-      status: "Selesai",
-      resep: {
-        namaPasien: "Budi Santoso",
-        umur: "34 tahun",
-        poli: "Poli Mata",
-        beratBadan: "70 kg",
-        Diagnosa: "Iritasi mata",
-        hargaObat: "10.000",
-        namaDokter: "dr. Sulastri",
-        idResep: "RSP010",
-        namaObat: "Tetes Mata",
-        jumlahObat: "1",
-        aturanPakai: "3x sehari",
-        keterangan: "Tidak untuk lensa kontak",
-        tanggalResep: "2025-05-10",
-      },
-    },
-
-    {
-      id: "PD011",
-      status: "Menunggu Pembayaran",
-      resep: {
-        namaPasien: "Andi Kurniawan",
-        umur: "23 tahun",
-        poli: "Poli Gigi",
-        beratBadan: "65 kg",
-        Diagnosa: "Sakit gigi berlubang",
-        hargaObat: "18.000",
-        namaDokter: "drg. Rika Sasmita",
-        idResep: "RSP011",
-        namaObat: "Asam Mefenamat",
-        jumlahObat: "10",
-        aturanPakai: "3x1 sesudah makan",
-        keterangan: "Jika nyeri muncul",
-        tanggalResep: "2025-05-10",
-      },
-    },
-    {
-      id: "PD012",
-      status: "Diproses",
-      resep: {
-        namaPasien: "Sinta Dewi",
-        umur: "31 tahun",
-        poli: "Poli Umum",
-        beratBadan: "59 kg",
-        Diagnosa: "Radang tenggorokan",
-        hargaObat: "12.000",
-        namaDokter: "dr. Hendra Wijaya",
-        idResep: "RSP012",
-        namaObat: "Lozenges",
-        jumlahObat: "16",
-        aturanPakai: "Dihisap setiap 4 jam",
-        keterangan: "Tidak ditelan",
-        tanggalResep: "2025-05-09",
-      },
-    },
-    {
-      id: "PD013",
-      status: "Sudah Bayar",
-      resep: {
-        namaPasien: "Dewi Sartika",
-        umur: "29 tahun",
-        poli: "Poli Kulit",
-        beratBadan: "52 kg",
-        Diagnosa: "Jerawat parah",
-        hargaObat: "17.000",
-        namaDokter: "dr. Maria Lestari",
-        idResep: "RSP013",
-        namaObat: "Benzoyl Peroxide",
-        jumlahObat: "1",
-        aturanPakai: "2x1 oles pagi dan malam",
-        keterangan: "Hindari sinar matahari langsung",
-        tanggalResep: "2025-05-09",
-      },
-    },
-    {
-      id: "PD014",
-      status: "Menunggu Pembayaran",
-      resep: {
-        namaPasien: "Rahmat Hidayat",
-        umur: "42 tahun",
-        poli: "Poli Dalam",
-        beratBadan: "80 kg",
-        Diagnosa: "Kolesterol tinggi",
-        hargaObat: "21.000",
-        namaDokter: "dr. Fajar Ahmad",
-        idResep: "RSP014",
-        namaObat: "Simvastatin",
-        jumlahObat: "20",
-        aturanPakai: "1x1 malam",
-        keterangan: "Sebelum tidur",
-        tanggalResep: "2025-05-08",
-      },
-    },
-    {
-      id: "PD015",
-      status: "Selesai",
-      resep: {
-        namaPasien: "Nur Aisyah",
-        umur: "36 tahun",
-        poli: "Poli THT",
-        beratBadan: "56 kg",
-        Diagnosa: "Infeksi telinga",
-        hargaObat: "19.000",
-        namaDokter: "dr. Hanif",
-        idResep: "RSP015",
-        namaObat: "Tetes Telinga",
-        jumlahObat: "1",
-        aturanPakai: "3x sehari",
-        keterangan: "Jangan dimasukkan kapas",
-        tanggalResep: "2025-05-08",
-      },
-    },
-    {
-      id: "PD016",
-      status: "Diproses",
-      resep: {
-        namaPasien: "Mira Setiani",
-        umur: "27 tahun",
-        poli: "Poli Kandungan",
-        beratBadan: "60 kg",
-        Diagnosa: "Infeksi saluran kemih",
-        hargaObat: "24.000",
-        namaDokter: "dr. Liana Wijayanti",
-        idResep: "RSP016",
-        namaObat: "Ciprofloxacin",
-        jumlahObat: "10",
-        aturanPakai: "2x1 selama 5 hari",
-        keterangan: "Minum banyak air",
-        tanggalResep: "2025-05-07",
-      },
-    },
-    {
-      id: "PD017",
-      status: "Sudah Bayar",
-      resep: {
-        namaPasien: "Agus Permana",
-        umur: "33 tahun",
-        poli: "Poli Paru",
-        beratBadan: "66 kg",
-        Diagnosa: "Batuk berdahak",
-        hargaObat: "13.000",
-        namaDokter: "dr. Dimas Arifin",
-        idResep: "RSP017",
-        namaObat: "Ambroxol",
-        jumlahObat: "10",
-        aturanPakai: "3x1 setelah makan",
-        keterangan: "Minum air hangat",
-        tanggalResep: "2025-05-07",
-      },
-    },
-    {
-      id: "PD018",
-      status: "Menunggu Pembayaran",
-      resep: {
-        namaPasien: "Lukman Hakim",
-        umur: "50 tahun",
-        poli: "Poli Jantung",
-        beratBadan: "75 kg",
-        Diagnosa: "Angina",
-        hargaObat: "26.000",
-        namaDokter: "dr. R. Yani",
-        idResep: "RSP018",
-        namaObat: "Nitroglycerin",
-        jumlahObat: "5",
-        aturanPakai: "Saat nyeri dada",
-        keterangan: "Letakkan di bawah lidah",
-        tanggalResep: "2025-05-06",
-      },
-    },
-    {
-      id: "PD019",
-      status: "Sudah Bayar",
-      resep: {
-        namaPasien: "Tiara Maharani",
-        umur: "21 tahun",
-        poli: "Poli Umum",
-        beratBadan: "49 kg",
-        Diagnosa: "Sakit perut ringan",
-        hargaObat: "8.000",
-        namaDokter: "dr. Ahmad Riyadi",
-        idResep: "RSP019",
-        namaObat: "Antasida cair",
-        jumlahObat: "1",
-        aturanPakai: "3x1 setelah makan",
-        keterangan: "Kocok sebelum digunakan",
-        tanggalResep: "2025-05-06",
-      },
-    },
-    {
-      id: "PD020",
-      status: "Selesai",
-      resep: {
-        namaPasien: "Galih Permadi",
-        umur: "43 tahun",
-        poli: "Poli Saraf",
-        beratBadan: "70 kg",
-        Diagnosa: "Migrain",
-        hargaObat: "20.000",
-        namaDokter: "dr. Vita Anggraeni",
-        idResep: "RSP020",
-        namaObat: "Sumatriptan",
-        jumlahObat: "5",
-        aturanPakai: "Saat migrain muncul",
-        keterangan: "Jangan lebih dari 2x sehari",
-        tanggalResep: "2025-05-05",
-      },
-    },
-  ]);
-
   const [statusFilter, setStatusFilter] = useState("Semua");
   const [sortBy, setSortBy] = useState("");
   const [searchText, setSearchText] = useState("");
+  const [showAll, setShowAll] = useState(false);
+  const [selectedResep, setSelectedResep] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const statusOptions = [
     "Semua",
@@ -406,12 +47,186 @@ const EResep = () => {
     Selesai: 4,
   };
 
-  const selesaikanAntrian = (id) => {
-    setData((prevData) =>
-      prevData.map((item) =>
-        item.id === id ? { ...item, status: "Selesai" } : item
-      )
-    );
+  useEffect(() => {
+    let isCancelled = false;
+
+    setLoading(true);
+    setError(null);
+    setData([]);
+
+    const fetchData = async () => {
+      try {
+        const [
+          pasienRes,
+          resepRes,
+          dokterRes,
+          dilayaniRes,
+          memunculkanRes,
+          obatRes,
+          detailEresepRes,
+        ] = await Promise.all([
+          fetch("http://127.0.0.1:3000/api/pasien"),
+          fetch("http://127.0.0.1:3000/api/eresep"),
+          fetch("http://127.0.0.1:3000/api/dokter"),
+          fetch("http://127.0.0.1:3000/api/dilayani"),
+          fetch("http://127.0.0.1:3000/api/memunculkan"),
+          fetch("http://127.0.0.1:3000/api/obat"),
+          fetch("http://127.0.0.1:3000/api/detail_eresep"),
+        ]);
+
+        if (
+          !pasienRes.ok ||
+          !resepRes.ok ||
+          !dokterRes.ok ||
+          !dilayaniRes.ok ||
+          !memunculkanRes.ok ||
+          !obatRes.ok ||
+          !detailEresepRes.ok
+        ) {
+          throw new Error("Gagal mengambil data dari server");
+        }
+
+        const [
+          pasienData,
+          resepData,
+          dokterData,
+          dilayaniData,
+          memunculkanData,
+          obatData,
+          detailEresepData,
+        ] = await Promise.all([
+          pasienRes.json(),
+          resepRes.json(),
+          dokterRes.json(),
+          dilayaniRes.json(),
+          memunculkanRes.json(),
+          obatRes.json(),
+          detailEresepRes.json(),
+        ]);
+
+        if (isCancelled) return;
+
+        const pasienArray = Array.isArray(pasienData)
+          ? pasienData
+          : [pasienData];
+        const resepArray = Array.isArray(resepData) ? resepData : [resepData];
+        const dokterArray = Array.isArray(dokterData)
+          ? dokterData
+          : [dokterData];
+        const dilayaniArray = Array.isArray(dilayaniData)
+          ? dilayaniData
+          : [dilayaniData];
+        const memunculkanArray = Array.isArray(memunculkanData)
+          ? memunculkanData
+          : [memunculkanData];
+        const obatArray = Array.isArray(obatData) ? obatData : [obatData];
+        const detailEresepArray = Array.isArray(detailEresepData)
+          ? detailEresepData
+          : [detailEresepData];
+
+        const combinedData = resepArray.map((resep) => {
+          const pasien = pasienArray.find(
+            (p) => p.id_pendaftaran === resep.id_pendaftaran
+          );
+          const dilayani = dilayaniArray.find(
+            (d) => d.id_pendaftaran === resep.id_pendaftaran
+          );
+          const dokter = dokterArray.find(
+            (d) => String(d.id_dokter) === String(dilayani?.id_dokter)
+          );
+          const detailResep = detailEresepArray.find(
+            (d) => d.id_eresep === resep.id_eresep
+          );
+
+          const daftarObat = memunculkanArray
+            .filter((m) => m.id_eresep === resep.id_eresep)
+            .map((m) => {
+              const obat = obatArray.find((o) => o.kode_obat === m.kode_obat);
+              return {
+                namaObat: obat?.nama_obat || "-",
+                aturanPakai: m.aturan_pakai || "-",
+                kuantitas: m.kuantitas || 0,
+                hargaSatuan: obat?.harga_satuan || 0,
+              };
+            });
+
+          return {
+            id: resep.id_eresep || "Tidak ditemukan",
+            status: resep.status || "Tidak diketahui",
+            namaPasien: pasien?.nama_pasien || "Nama pasien tidak tersedia",
+            namaDokter: dokter?.nama_dokter || "Nama dokter tidak diketahui",
+            poli: dokter?.poli || "-",
+            umur: pasien?.umur || "-",
+            beratBadan: pasien?.berat_badan || "-",
+            tanggalResep: detailResep?.tanggal_eresep || "-",
+            diagnosa: pasien?.diagnosa || "-",
+            keterangan: detailResep?.catatan || "-",
+            daftarObat,
+          };
+        });
+
+        setData(combinedData);
+        setLoading(false);
+      } catch (error) {
+        if (isCancelled) return;
+        setError(error.message || "Terjadi kesalahan");
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
+
+  const updateStatusResep = async (id, newStatus) => {
+    try {
+      const response = await fetch(`http://127.0.0.1:3000/api/eresep/${id}`, {
+        method: "PUT", // atau PATCH tergantung API
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Gagal update status resep");
+      }
+
+      return true;
+    } catch (error) {
+      alert(error.message);
+      return false;
+    }
+  };
+
+  // Fungsi panggil pasien, update status jadi Diproses permanen di DB
+  const panggilPasien = async (id) => {
+    const success = await updateStatusResep(id, "Diproses");
+    if (success) {
+      setData((prevData) =>
+        prevData.map((item) =>
+          item.id === id ? { ...item, status: "Diproses" } : item
+        )
+      );
+      const pasien = data.find((d) => d.id === id);
+      alert(`Pasien dipanggil: ${pasien?.namaPasien || id}`);
+    }
+  };
+
+  // Fungsi selesaikan antrian, update status jadi Selesai permanen di DB
+  const selesaikanAntrian = async (id) => {
+    const success = await updateStatusResep(id, "Selesai");
+    if (success) {
+      setData((prevData) =>
+        prevData.map((item) =>
+          item.id === id ? { ...item, status: "Selesai" } : item
+        )
+      );
+      alert(`Pasien selesai: ${id}`);
+    }
   };
 
   const filteredAndSortedData = data
@@ -424,23 +239,19 @@ const EResep = () => {
       const lowerSearch = searchText.toLowerCase();
       return (
         item.id.toLowerCase().includes(lowerSearch) ||
-        item.resep.namaPasien.toLowerCase().includes(lowerSearch) ||
-        item.resep.namaDokter.toLowerCase().includes(lowerSearch)
+        item.namaPasien.toLowerCase().includes(lowerSearch) ||
+        item.namaDokter.toLowerCase().includes(lowerSearch)
       );
     })
     .sort((a, b) => {
       const aPriority = statusPriority[a.status] || 999;
       const bPriority = statusPriority[b.status] || 999;
-
       if (aPriority !== bPriority) return aPriority - bPriority;
 
-      if (sortBy === "nama")
-        return a.resep.namaPasien.localeCompare(b.resep.namaPasien);
-      if (sortBy === "dokter")
-        return a.resep.namaDokter.localeCompare(b.resep.namaDokter);
-
-      if (sortBy === "id") return a.id.localeCompare(b.id);
-
+      if (sortBy === "nama") return a.namaPasien.localeCompare(b.namaPasien);
+      if (sortBy === "dokter") return a.namaDokter.localeCompare(b.namaDokter);
+      if (sortBy === "id")
+        return a.id.toString().localeCompare(b.id.toString());
       return 0;
     });
 
@@ -453,17 +264,6 @@ const EResep = () => {
     }
   });
 
-  const panggilPasien = (id) => {
-    setData((prevData) =>
-      prevData.map((item) =>
-        item.id === id ? { ...item, status: "Diproses" } : item
-      )
-    );
-  };
-
-  const [selectedResep, setSelectedResep] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-
   const openModal = (resep) => {
     setSelectedResep(resep);
     setShowModal(true);
@@ -473,8 +273,6 @@ const EResep = () => {
     setShowModal(false);
     setSelectedResep(null);
   };
-
-  const [showAll, setShowAll] = useState(false);
 
   // Batasi data hanya 12 jika showAll = false
   const displayedData = showAll
@@ -487,6 +285,8 @@ const EResep = () => {
         <div>
           <h1 className="text-xl md:text-2xl font-bold">E-Resep</h1>
           <p className="text-slate-600 mt-3">Menampilkan E-resep</p>
+          {error && <p className="text-red-600">{error}</p>}
+          {loading && <p>Memuat data...</p>}
         </div>
         <div className="flex flex-wrap gap-2 px-4 justify-center sm:justify-start">
           {statusOptions.map((status) => (
@@ -613,10 +413,10 @@ const EResep = () => {
                       {item.id}
                     </td>
                     <td className="border-2 border-slate-400 px-2 py-[2px] sm:px-3 sm:py-2 md:px-4 md:py-2">
-                      {item.resep.namaPasien}
+                      {item.namaPasien}
                     </td>
                     <td className="border-2 border-slate-400 px-2 py-[2px] sm:px-3 sm:py-2 md:px-4 md:py-2">
-                      {item.resep.namaDokter}
+                      {item.namaDokter}
                     </td>
                     <td className="border-2 border-slate-400 text-center px-1 sm:px-2 md:px-3 lg:px-4 py-1">
                       <div className="flex flex-wrap justify-center items-center gap-1 text-[8px] sm:text-[9px] md:text-[10px] lg:text-sm">
@@ -648,7 +448,7 @@ const EResep = () => {
                     <td className="border-2 border-slate-400 text-center px-2 py-1 sm:px-3 sm:py-2 md:px-4 md:py-2">
                       <div className="flex justify-center">
                         <button
-                          onClick={() => openModal(item.resep)}
+                          onClick={() => openModal(item)}
                           className="
     bg-[#557187] text-white 
     text-[7px] xs:text-[8px] sm:text-[9px] md:text-[10px] lg:text-sm
@@ -720,7 +520,11 @@ const EResep = () => {
       </div>
 
       {showModal && selectedResep && (
-        <EResepModal resep={selectedResep} onClose={closeModal} />
+        <ResepModal
+          showModal={showModal}
+          onClose={closeModal}
+          data={selectedResep}
+        />
       )}
 
       {/* Scroll to Top Bottom */}
