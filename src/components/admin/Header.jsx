@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { LucideBell, LucideSearch, LucideX } from "lucide-react";
-import NotificationDropdown from "./NotificationDropdown";
+import NotificationDropdown from "./NotificationDropDown";
 import ProfileDropdown from "./ProfileDropdown";
 
 const Header = () => {

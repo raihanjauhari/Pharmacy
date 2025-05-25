@@ -8,9 +8,9 @@ import {
   LucideTriangleAlert,
 } from "lucide-react";
 import Footer from "../../components/admin/Footer";
-import InventoryModal from "../../components/petugas/InventoryModal";
-import EresepModal from "../../components/petugas/EResepModal";
-import StokObatModal from "../../components/petugas/StokObatModal";
+import InventoryModal from "../../components/admin/InventoryModal";
+import EresepModal from "../../components/admin/EresepModal";
+import StokObatModal from "../../components/admin/StokObatModal";
 import OutOfStockModal from "../../components/OutOfStockModal";
 import ApotikChartCard from "../../components/admin/ApotikChartCard";
 import LaporanPenyakit from "../../components/admin/LaporanPenyakit";
