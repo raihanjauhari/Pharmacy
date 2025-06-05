@@ -13,9 +13,14 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  /* Hapus atau komentari bagian ini jika tidak ingin ada mode gelap */
+  /* color-scheme: light dark; */
+  /* color: rgba(255, 255, 255, 0.87); */
+  /* background-color: #242424; */
+
+  /* Atur warna default agar selalu seperti yang Anda inginkan untuk mode terang */
+  color: #213547; /* Warna teks default */
+  background-color: #ffffff; /* Warna latar belakang default */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -61,12 +66,13 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 } */
 
-@media (prefers-color-scheme: light) {
+/* Hapus atau komentari seluruh media query ini */
+/* @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
     background-color: #ffffff;
   }
-}
+} */
 
 @layer utilities {
   .container {

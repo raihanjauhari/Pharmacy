@@ -33,10 +33,22 @@ const Dashboard = () => {
     habis: { label: "Habis", count: 0 },
   });
 
-  const [setObatAman] = useState([]);
-  const [setObatHampirHabis] = useState([]);
-  const [setObatHabis] = useState([]);
+  // State baru untuk data API
+  const [, setEresepData] = useState([]);
+  const [, setDetailEresepData] = useState([]);
+  const [, setMemunculkanData] = useState([]);
+  const [, setPasienData] = useState([]);
 
+  // State untuk data yang akan ditampilkan di SummaryCard
+  const [totalEresep, setTotalEresep] = useState(0);
+  const [eresepMenungguPembayaran, setEresepMenungguPembayaran] = useState(0);
+  const [pembayaranSelesai, setPembayaranSelesai] = useState(0);
+  const [totalPelanggan, setTotalPelanggan] = useState(0);
+  const [obatSeringDibeli, setObatSeringDibeli] = useState("N/A"); // Default atau loading state
+
+  const navigate = useNavigate();
+
+  // Fetch data obat
   useEffect(() => {
     axios
       .get("http://127.0.0.1:3000/api/obat")
@@ -59,15 +71,90 @@ const Dashboard = () => {
           hampirHabis: { label: "Hampir Habis", count: hampirHabis.length },
           habis: { label: "Habis", count: habis.length },
         });
-
-        setObatAman(aman);
-        setObatHampirHabis(hampirHabis);
-        setObatHabis(habis);
       })
       .catch((err) => console.error("Gagal fetch obat:", err));
   }, []);
 
-  const navigate = useNavigate();
+  // Fetch data e-resep, detail e-resep, memunculkan, dan pasien
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [
+          eresepRes,
+          detailEresepRes,
+          memunculkanRes,
+          pasienRes,
+          obatRes, // Ambil juga data obat lagi untuk 'obat yang sering dibeli'
+        ] = await Promise.all([
+          axios.get("http://127.0.0.1:3000/api/eresep"),
+          axios.get("http://127.0.0.1:3000/api/detail_eresep"),
+          axios.get("http://127.0.0.1:3000/api/memunculkan"),
+          axios.get("http://127.0.0.1:3000/api/pasien"),
+          axios.get("http://127.0.0.1:3000/api/obat"),
+        ]);
+
+        const eresep = eresepRes.data;
+        const detailEresep = detailEresepRes.data;
+        const memunculkan = memunculkanRes.data;
+        const pasien = pasienRes.data;
+        const allObat = obatRes.data;
+
+        setEresepData(eresep);
+        setDetailEresepData(detailEresep);
+        setMemunculkanData(memunculkan);
+        setPasienData(pasien);
+
+        // --- Data untuk SummaryCard2 (e-Eresep) ---
+        const totalEresepCount = eresep.length;
+        // Asumsi "e-Resep Baru" adalah yang statusnya "Menunggu Pembayaran"
+        const eresepBaruCount = eresep.filter(
+          (item) => item.status === "Menunggu Pembayaran"
+        ).length;
+        setTotalEresep(totalEresepCount);
+        setEresepMenungguPembayaran(eresepBaruCount);
+
+        // --- Data untuk SummaryCard3 (Pembayaran) ---
+        // Asumsi "Pembayaran Selesai" = e-Resep dengan status "Selesai"
+        const pembayaranSelesaiCount = eresep.filter(
+          (item) => item.status === "Selesai"
+        ).length;
+        setPembayaranSelesai(pembayaranSelesaiCount);
+
+        // --- Data untuk SummaryCard4 (Pelanggan) ---
+        const totalPelangganCount = pasien.length;
+        setTotalPelanggan(totalPelangganCount);
+
+        // --- Obat yang sering dibeli ---
+        const obatKuantitasMap = {};
+        memunculkan.forEach((item) => {
+          if (obatKuantitasMap[item.kode_obat]) {
+            obatKuantitasMap[item.kode_obat] += item.kuantitas;
+          } else {
+            obatKuantitasMap[item.kode_obat] = item.kuantitas;
+          }
+        });
+
+        let mostFrequentObat = "N/A";
+        let maxKuantitas = 0;
+
+        for (const kodeObat in obatKuantitasMap) {
+          if (obatKuantitasMap[kodeObat] > maxKuantitas) {
+            maxKuantitas = obatKuantitasMap[kodeObat];
+            // Cari nama obat berdasarkan kode_obat dari allObat
+            const foundObat = allObat.find(
+              (obat) => obat.kode_obat === kodeObat
+            );
+            mostFrequentObat = foundObat ? foundObat.nama_obat : "N/A";
+          }
+        }
+        setObatSeringDibeli(mostFrequentObat);
+      } catch (error) {
+        console.error("Gagal fetch data API:", error);
+      }
+    };
+
+    fetchData();
+  }, []); // Dependensi kosong agar hanya berjalan sekali saat komponen mount
 
   return (
     <div>
@@ -85,7 +172,6 @@ const Dashboard = () => {
           </h2>
         </div>
       </div>
-
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 px-4 sm:px-6 md:px-8 mt-[-320px] z-20 relative">
         {[
           {
@@ -98,7 +184,7 @@ const Dashboard = () => {
             onClick: () => setIsModalOpen(true),
           },
           {
-            title: "129",
+            title: eresepMenungguPembayaran, // Menggunakan data dinamis
             desc: "E-Resep Masuk",
             icon: LucideBriefcaseMedical,
             border: "#E3C731",
@@ -167,7 +253,6 @@ const Dashboard = () => {
           </div>
         ))}
       </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 px-4 sm:px-8 mt-15 md:mt-15 lg:mt-38">
         <SummaryCard
           title="Stock"
@@ -183,26 +268,25 @@ const Dashboard = () => {
           linkText="Lihat e-Resep"
           linkAction={() => navigate("/dashboard-petugas/e-resep")}
           items={[
-            { value: "46", label: "e-Eresep Baru" },
-            { value: "700", label: "Jumlah e-Eresep" },
+            { value: eresepMenungguPembayaran, label: "e-Eresep Baru" }, // Data dinamis
+            { value: totalEresep, label: "Jumlah e-Eresep" }, // Data dinamis
           ]}
         />
         <SummaryCard3
           title="Pembayaran"
           items={[
-            { value: "07", label: "Pembayaran Tertunda" },
-            { value: "120", label: "Pembayaran Selesai" },
+            { value: eresepMenungguPembayaran, label: "Pembayaran Tertunda" }, // Data dinamis
+            { value: pembayaranSelesai, label: "Pembayaran Selesai" }, // Data dinamis
           ]}
         />
         <SummaryCard4
           title="Pelanggan"
           items={[
-            { value: "831", label: "Total Pelanggan" },
-            { value: "Paracetamol", label: "Obat yang sering dibeli" },
+            { value: totalPelanggan, label: "Total Pelanggan" }, // Data dinamis
+            { value: obatSeringDibeli, label: "Obat yang sering dibeli" }, // Data dinamis
           ]}
         />
       </div>
-
       <InventoryModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -219,9 +303,8 @@ const Dashboard = () => {
         isOpen={isOutOfStockModal}
         onClose={() => setIsOutOfStockModal(false)}
       />
-
       <ScrollToTopButton />
-      <Footer />
+      <Footer /> {/* Pastikan komponen Footer sudah diupdate */}
     </div>
   );
 };

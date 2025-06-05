@@ -65,15 +65,11 @@ const ApotikChartCard = () => {
   ];
 
   return (
-    <div className="w-full bg-white border-2 border-gray-200 rounded-lg shadow-sm dark:bg-gray-800">
+    <div className="w-full bg-white border-2 border-gray-200 rounded-lg shadow-sm ">
       <div className="flex justify-between p-4 md:p-6 pb-0 md:pb-0">
         <div>
-          <h5 className="text-3xl font-bold text-gray-900 dark:text-white pb-2">
-            Survei Apotik
-          </h5>
-          <p className="text-base text-gray-500 dark:text-gray-400">
-            Jumlah pasien per bulan
-          </p>
+          <h5 className="text-3xl font-bold text-gray-900 ">Survei Apotik</h5>
+          <p className="text-base text-gray-500 ">Jumlah pasien per bulan</p>
         </div>
       </div>
       <div className="px-4 pt-2">
